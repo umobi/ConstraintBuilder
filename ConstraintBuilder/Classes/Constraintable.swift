@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public struct Constraintable {
+public struct Constraintable: ConstraintSearchable {
     fileprivate let firstItem: NSObject
 
     internal init(_ firstItem: NSObject) {
@@ -176,7 +176,7 @@ public extension Constraintable {
 }
 
 public extension Constraintable {
-    static func deactivate(_ constraints: [ConstraintType]) {
+    static func deactivate(_ constraints: [ConstraintSearchable]) {
         NSLayoutConstraint.deactivate(constraints.reduce([NSLayoutConstraint]()) {
             $0 + $1.constraints.reduce([NSLayoutConstraint]()) {
                 $0 + $1.thatExists
@@ -184,7 +184,7 @@ public extension Constraintable {
         })
     }
 
-    static func deactivate(_ constraints: ConstraintType...) {
+    static func deactivate(_ constraints: ConstraintSearchable...) {
         NSLayoutConstraint.deactivate(constraints.reduce([NSLayoutConstraint]()) {
             $0 + $1.constraints.reduce([NSLayoutConstraint]()) {
                 $0 + $1.thatExists
@@ -194,12 +194,12 @@ public extension Constraintable {
 }
 
 extension NSLayoutConstraint {
-    struct Parcial {
+    struct Natural: GenericConstraint {
         let firstItem: NSObject
         let secondItem: NSObject?
         let firstAttribute: NSLayoutConstraint.Attribute
-        let relation: NSLayoutConstraint.Relation
-        let secondAttribute: NSLayoutConstraint.Attribute
+        let relation: NSLayoutConstraint.Relation?
+        let secondAttribute: NSLayoutConstraint.Attribute?
         let priority: UILayoutPriority?
         let constant: CGFloat?
         let multiplier: CGFloat?
@@ -208,9 +208,9 @@ extension NSLayoutConstraint {
             let constraint = NSLayoutConstraint(
                 item: self.firstItem,
                 attribute: self.firstAttribute,
-                relatedBy: self.relation,
+                relatedBy: self.relation ?? .equal,
                 toItem: self.secondItem,
-                attribute: self.secondAttribute,
+                attribute: self.secondAttribute ?? .notAnAttribute,
                 multiplier: self.multiplier ?? 1,
                 constant: self.constant ?? 0
             )
@@ -221,18 +221,84 @@ extension NSLayoutConstraint {
     }
 }
 
-extension NSLayoutConstraint.Parcial {
+protocol GenericConstraint {
+    var constraint: NSLayoutConstraint { get }
+}
+
+extension NSLayoutConstraint.Natural {
     var thatExists: [NSLayoutConstraint] {
-        self.firstItem.uiConstraints.filter {
-            [Bool]([
-                self.secondItem == nil || self.secondItem === $0.secondItem,
+        let secondItem = self.secondItem ?? self.firstItem.uiSuperitem
+        let firstItemConstraints = self.firstItem.uiConstraints
+        let secondItemConstraints = secondItem?.uiConstraints ?? []
+        let mayBeNil = self.secondAttribute == nil || self.secondAttribute == .notAnAttribute
+
+        let constraints = firstItemConstraints + secondItemConstraints
+
+        return constraints.filter {
+            let check = [Bool]([
+                secondItem == nil || secondItem === $0.secondItem || (mayBeNil && $0.secondItem == nil),
                 self.firstAttribute == $0.firstAttribute,
-                self.relation == $0.relation,
-                self.secondAttribute == $0.secondAttribute,
+                self.secondAttribute == nil || self.secondAttribute == $0.secondAttribute,
+                self.relation == nil || self.relation == $0.relation,
                 self.priority == nil || self.priority == $0.priority,
                 self.constant == nil || self.constant == $0.constant,
                 self.multiplier == nil || self.multiplier == self.multiplier
-            ]).allSatisfy { $0 }
+            ])
+
+            return check.allSatisfy { $0 }
         }
+    }
+}
+
+extension Constraintable {
+    var constraints: [NSLayoutConstraint.Natural] {
+        (self.firstItem.uiConstraints + (self.firstItem.uiSuperitem?.uiConstraints ?? []))
+            .filter { $0.firstItem === self.firstItem }
+            .compactMap { $0.natural }
+    }
+}
+
+
+public protocol ConstraintSearchable {
+
+}
+
+extension ConstraintSearchable {
+    var constraints: [NSLayoutConstraint.Natural] {
+        switch self {
+        case let constraintType as ConstraintType:
+            return constraintType.constraints
+        case let contraintable as Constraintable:
+            return contraintable.constraints
+        default:
+            return []
+        }
+    }
+}
+
+extension Constraintable {
+    var searchableConstraints: [NSLayoutConstraint.Natural] {
+        self.firstItem.uiConstraints.compactMap {
+            $0.natural
+        }
+    }
+}
+
+extension NSLayoutConstraint {
+    var natural: Natural? {
+        guard let firstItem = self.firstItem as? NSObject, self.firstAttribute.isValid else {
+            return nil
+        }
+
+        return Natural(
+            firstItem: firstItem,
+            secondItem: self.secondItem as? NSObject,
+            firstAttribute: self.firstAttribute,
+            relation: self.relation,
+            secondAttribute: self.secondAttribute,
+            priority: self.priority,
+            constant: self.constant,
+            multiplier: self.multiplier
+        )
     }
 }

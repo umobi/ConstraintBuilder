@@ -342,7 +342,7 @@ extension Constraint {
         }
     }
 
-    var constraints: [NSLayoutConstraint.Parcial] {
+    var constraints: [NSLayoutConstraint.Natural] {
         return self.firstAttribute.map { firstAttribute in
             let secondItem = SecondItem(self, firstAttribute: firstAttribute)
             let constant: CGFloat? = {
@@ -353,12 +353,12 @@ extension Constraint {
                 return (firstAttribute.isNegative ? -1 : 1) * constant
             }()
 
-            return NSLayoutConstraint.Parcial(
+            return NSLayoutConstraint.Natural(
                 firstItem: self.firstItem,
                 secondItem: secondItem?.item,
                 firstAttribute: firstAttribute,
-                relation: self.relation ?? .equal,
-                secondAttribute: secondItem?.attribute ?? .notAnAttribute,
+                relation: self.relation?.invertIfNeeded(firstAttribute),
+                secondAttribute: secondItem?.attribute,
                 priority: self.priority,
                 constant: constant,
                 multiplier: self.multiplier
@@ -393,6 +393,21 @@ internal extension NSObject {
     }
 }
 
+private extension NSLayoutConstraint.Relation {
+    func invertIfNeeded(_ attribute: NSLayoutConstraint.Attribute) -> NSLayoutConstraint.Relation {
+        switch self {
+        case .equal:
+            return self
+        case .lessThanOrEqual:
+            return attribute.isNegative ? .greaterThanOrEqual : self
+        case .greaterThanOrEqual:
+            return attribute.isNegative ? .lessThanOrEqual : self
+        @unknown default:
+            return self
+        }
+    }
+}
+
 private extension NSLayoutConstraint.Attribute {
     var isNegative: Bool {
         switch self {
@@ -419,6 +434,19 @@ private extension NSLayoutConstraint.Attribute {
             return firstItem.uiSuperitem
         case .height, .width, .notAnAttribute:
             return nil
+        @unknown default:
+            return nil
+        }
+    }
+}
+
+extension NSLayoutConstraint.Attribute {
+    var isValid: Bool {
+        switch self {
+        case .top, .topMargin, .bottom, .bottomMargin, .leading, .leadingMargin, .trailing, .trailingMargin, .left, .leftMargin, .right, .rightMargin, .lastBaseline, .firstBaseline, .centerX, .centerXWithinMargins, .centerY, .centerYWithinMargins, .height, .width, .notAnAttribute:
+            return true
+        @unknown default:
+            return false
         }
     }
 }
