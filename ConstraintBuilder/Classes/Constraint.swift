@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public struct Constraint<Ref: ContraintReference>: ConstraintType {
+public struct Constraint<Ref: ConstraintReference>: ConstraintType {
     private let firstItem: NSObject
     private let secondItem: NSObject?
     private let firstAttribute: Set<NSLayoutConstraint.Attribute>
@@ -314,6 +314,12 @@ public extension Constraint where Ref == ConstraintYReference {
         self.edit {
             $0.firstAttribute.insert(.lastBaseline)
         }
+    }
+}
+
+public extension Constraint {
+    func update() -> ConstraintUpdate<Ref> {
+        .init(self)
     }
 }
 
