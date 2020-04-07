@@ -1,0 +1,22 @@
+{
+  "name": "ConstraintBuilder",
+  "version": "0.1.0",
+  "summary": "A short description of ConstraintBuilder.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/brennobemoura/ConstraintBuilder",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "brennobemoura": "brenno@umobi.com.br"
+  },
+  "source": {
+    "git": "https://github.com/brennobemoura/ConstraintBuilder.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "ConstraintBuilder/Classes/**/*"
+}

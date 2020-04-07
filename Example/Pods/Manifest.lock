@@ -1,0 +1,16 @@
+PODS:
+  - ConstraintBuilder (0.1.0)
+
+DEPENDENCIES:
+  - ConstraintBuilder (from `../`)
+
+EXTERNAL SOURCES:
+  ConstraintBuilder:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  ConstraintBuilder: 1a04672b8528064b5af59da0b719a352d008e117
+
+PODFILE CHECKSUM: 52ecf1186f9bd5f9c3b31617c7ecd37f33efa579
+
+COCOAPODS: 1.9.1
