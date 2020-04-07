@@ -318,18 +318,40 @@ public extension Constraint where Ref == ConstraintYReference {
 }
 
 extension Constraint {
+    struct SecondItem {
+        let item: NSObject
+        let attribute: NSLayoutConstraint.Attribute
+
+        init?(_ constraint: Constraint<Ref>, firstAttribute: NSLayoutConstraint.Attribute) {
+            guard let item = constraint.secondItem ?? firstAttribute.needsItem(constraint.firstItem) else {
+                return nil
+            }
+
+            self.item = item
+            self.attribute = {
+                if let attribute = constraint.secondAttribute.first(where: { $0 == firstAttribute }) {
+                    return attribute
+                }
+
+                if let attribute = constraint.secondAttribute.first {
+                    return attribute
+                }
+
+                return firstAttribute
+            }()
+        }
+    }
+
     var constraints: [NSLayoutConstraint] {
         return self.firstAttribute.map { firstAttribute in
-            NSLayoutConstraint(
+            let secondItem = SecondItem(self, firstAttribute: firstAttribute)
+
+            return NSLayoutConstraint(
                 item: self.firstItem,
                 attribute: firstAttribute,
                 relatedBy: self.relation ?? .equal,
-                toItem: self.secondItem ?? firstAttribute.needsItem(self.firstItem),
-                attribute: {
-                    return ((self.secondAttribute.first(where: { $0 == firstAttribute }) ??
-                        self.secondAttribute.first) ??
-                        .notAnAttribute)
-                }(),
+                toItem: secondItem?.item,
+                attribute: secondItem?.attribute ?? .notAnAttribute,
                 multiplier: self.multiplier ?? 1,
                 constant: (firstAttribute.isNegative ? -1 : 1) * (self.constant ?? 0)
             )
