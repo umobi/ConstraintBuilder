@@ -1,0 +1,6 @@
+use_frameworks!
+target 'ConstraintBuilder_Tests' do
+  pod 'ConstraintBuilder', :path => '../'
+  
+  
+end
