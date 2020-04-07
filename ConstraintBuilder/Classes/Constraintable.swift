@@ -160,13 +160,79 @@ public extension Constraintable {
 public extension Constraintable {
     static func activate(_ constraints: [ConstraintType]) {
         NSLayoutConstraint.activate(constraints.reduce([NSLayoutConstraint]()) {
-            $0 + $1.constraints
+            $0 + $1.constraints.map {
+                $0.constraint
+            }
         })
     }
 
     static func activate(_ constraints: ConstraintType...) {
         NSLayoutConstraint.activate(constraints.reduce([NSLayoutConstraint]()) {
-            $0 + $1.constraints
+            $0 + $1.constraints.map {
+                $0.constraint
+            }
         })
+    }
+}
+
+public extension Constraintable {
+    static func deactivate(_ constraints: [ConstraintType]) {
+        NSLayoutConstraint.deactivate(constraints.reduce([NSLayoutConstraint]()) {
+            $0 + $1.constraints.reduce([NSLayoutConstraint]()) {
+                $0 + $1.thatExists
+            }
+        })
+    }
+
+    static func deactivate(_ constraints: ConstraintType...) {
+        NSLayoutConstraint.deactivate(constraints.reduce([NSLayoutConstraint]()) {
+            $0 + $1.constraints.reduce([NSLayoutConstraint]()) {
+                $0 + $1.thatExists
+            }
+        })
+    }
+}
+
+extension NSLayoutConstraint {
+    struct Parcial {
+        let firstItem: NSObject
+        let secondItem: NSObject?
+        let firstAttribute: NSLayoutConstraint.Attribute
+        let relation: NSLayoutConstraint.Relation
+        let secondAttribute: NSLayoutConstraint.Attribute
+        let priority: UILayoutPriority?
+        let constant: CGFloat?
+        let multiplier: CGFloat?
+
+        var constraint: NSLayoutConstraint {
+            let constraint = NSLayoutConstraint(
+                item: self.firstItem,
+                attribute: self.firstAttribute,
+                relatedBy: self.relation,
+                toItem: self.secondItem,
+                attribute: self.secondAttribute,
+                multiplier: self.multiplier ?? 1,
+                constant: self.constant ?? 0
+            )
+
+            constraint.priority = self.priority ?? .required
+            return constraint
+        }
+    }
+}
+
+extension NSLayoutConstraint.Parcial {
+    var thatExists: [NSLayoutConstraint] {
+        self.firstItem.uiConstraints.filter {
+            [Bool]([
+                self.secondItem == nil || self.secondItem === $0.secondItem,
+                self.firstAttribute == $0.firstAttribute,
+                self.relation == $0.relation,
+                self.secondAttribute == $0.secondAttribute,
+                self.priority == nil || self.priority == $0.priority,
+                self.constant == nil || self.constant == $0.constant,
+                self.multiplier == nil || self.multiplier == self.multiplier
+            ]).allSatisfy { $0 }
+        }
     }
 }

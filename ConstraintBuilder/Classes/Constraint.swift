@@ -342,30 +342,51 @@ extension Constraint {
         }
     }
 
-    var constraints: [NSLayoutConstraint] {
+    var constraints: [NSLayoutConstraint.Parcial] {
         return self.firstAttribute.map { firstAttribute in
             let secondItem = SecondItem(self, firstAttribute: firstAttribute)
+            let constant: CGFloat? = {
+                guard let constant = self.constant else {
+                    return nil
+                }
 
-            return NSLayoutConstraint(
-                item: self.firstItem,
-                attribute: firstAttribute,
-                relatedBy: self.relation ?? .equal,
-                toItem: secondItem?.item,
-                attribute: secondItem?.attribute ?? .notAnAttribute,
-                multiplier: self.multiplier ?? 1,
-                constant: (firstAttribute.isNegative ? -1 : 1) * (self.constant ?? 0)
+                return (firstAttribute.isNegative ? -1 : 1) * constant
+            }()
+
+            return NSLayoutConstraint.Parcial(
+                firstItem: self.firstItem,
+                secondItem: secondItem?.item,
+                firstAttribute: firstAttribute,
+                relation: self.relation ?? .equal,
+                secondAttribute: secondItem?.attribute ?? .notAnAttribute,
+                priority: self.priority,
+                constant: constant,
+                multiplier: self.multiplier
             )
         }
     }
 }
 
-private extension NSObject {
-    var superUIItem: NSObject? {
+internal extension NSObject {
+    var uiSuperitem: NSObject? {
         switch self {
         case let view as UIView:
             return view.superview
         case let guide as UILayoutGuide:
             return guide.owningView?.superview
+        default:
+            fatalError()
+        }
+    }
+
+    var uiConstraints: [NSLayoutConstraint] {
+        switch self {
+        case let view as UIView:
+            return view.constraints
+        case let guide as UILayoutGuide:
+            return guide.owningView?.constraints.filter {
+                $0.firstItem === guide
+            } ?? []
         default:
             fatalError()
         }
@@ -387,15 +408,15 @@ private extension NSLayoutConstraint.Attribute {
     func needsItem(_ firstItem: NSObject) -> NSObject? {
         switch self {
         case .top, .topMargin, .bottom, .bottomMargin:
-            return firstItem.superUIItem
+            return firstItem.uiSuperitem
         case .leading, .leadingMargin, .trailing, .trailingMargin:
-            return firstItem.superUIItem
+            return firstItem.uiSuperitem
         case .left, .leftMargin, .right, .rightMargin:
-            return firstItem.superUIItem
+            return firstItem.uiSuperitem
         case .lastBaseline, .firstBaseline:
-            return firstItem.superUIItem
+            return firstItem.uiSuperitem
         case .centerX, .centerXWithinMargins, .centerY, .centerYWithinMargins:
-            return firstItem.superUIItem
+            return firstItem.uiSuperitem
         case .height, .width, .notAnAttribute:
             return nil
         }

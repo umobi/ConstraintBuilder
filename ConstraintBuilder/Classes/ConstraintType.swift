@@ -11,7 +11,7 @@ import UIKit
 public protocol ConstraintType {}
 
 extension ConstraintType {
-    var constraints: [NSLayoutConstraint] {
+    var constraints: [NSLayoutConstraint.Parcial] {
         switch self {
         case let xRef as ConstraintX:
             return xRef.constraints
