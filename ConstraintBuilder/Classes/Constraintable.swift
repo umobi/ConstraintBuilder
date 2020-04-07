@@ -225,6 +225,23 @@ protocol GenericConstraint {
     var constraint: NSLayoutConstraint { get }
 }
 
+extension NSLayoutConstraint.Attribute {
+    func isEqual(to attribute: NSLayoutConstraint.Attribute) -> Bool {
+        switch self {
+        case .leading, .left:
+            return [.leading, .left].contains(attribute)
+        case .leadingMargin, .leftMargin:
+            return [.leadingMargin, .leftMargin].contains(attribute)
+        case .trailing, .right:
+            return [.trailing, .right].contains(attribute)
+        case .trailingMargin, .rightMargin:
+            return [.trailingMargin, .rightMargin].contains(attribute)
+        default:
+            return self == attribute
+        }
+    }
+}
+
 extension NSLayoutConstraint.Natural {
     var thatExists: [NSLayoutConstraint] {
         let secondItem = self.secondItem ?? self.firstItem.uiSuperitem
@@ -236,9 +253,10 @@ extension NSLayoutConstraint.Natural {
 
         return constraints.filter {
             let check = [Bool]([
+                $0.firstItem === self.firstItem,
                 secondItem == nil || secondItem === $0.secondItem || (mayBeNil && $0.secondItem == nil),
-                self.firstAttribute == $0.firstAttribute,
-                self.secondAttribute == nil || self.secondAttribute == $0.secondAttribute,
+                self.firstAttribute.isEqual(to: $0.firstAttribute),
+                self.secondAttribute == nil || self.secondAttribute?.isEqual(to: $0.secondAttribute) ?? false,
                 self.relation == nil || self.relation == $0.relation,
                 self.priority == nil || self.priority == $0.priority,
                 self.constant == nil || self.constant == $0.constant,

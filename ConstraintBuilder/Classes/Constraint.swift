@@ -169,7 +169,9 @@ private extension Constraint {
                 return
             }
 
-            guard reference.firstAttribute == self.firstAttribute else {
+            guard reference.firstAttribute.count == self.firstAttribute.count && (reference.firstAttribute.allSatisfy {
+                self.firstAttribute.contains($0)
+            }) else {
                 fatalError()
             }
 
