@@ -221,6 +221,143 @@ extension NSLayoutConstraint {
     }
 }
 
+extension NSLayoutConstraint {
+    enum ItemOrder {
+        case firstFirst
+        case secondFirst
+        case firstSecond
+        case secondSecond
+        case none
+    }
+
+    private func isFirstItemEqual(_ natural: Natural) -> ItemOrder {
+        if natural.firstItem.isUIEqual(to: self.firstItem) {
+            return .firstFirst
+        }
+
+        if natural.firstItem.isUIEqual(to: self.secondItem) {
+            return .firstSecond
+        }
+
+        if natural.secondItem?.isUIEqual(to: self.firstItem) ?? false {
+            return .secondFirst
+        }
+
+        if natural.secondItem?.isUIEqual(to: self.secondItem) ?? false {
+            return .secondSecond
+        }
+
+        return .none
+    }
+
+    private func isSecondItemEqual(_ natural: Natural, with order: ItemOrder) -> Bool {
+        switch order {
+        case .firstFirst:
+            guard let secondItem = natural.secondItem else {
+                return self.secondItem == nil
+            }
+
+            return secondItem.isUIEqual(to: self.secondItem)
+        case .firstSecond:
+            guard let secondItem = natural.secondItem else {
+                return false
+            }
+
+            return secondItem.isUIEqual(to: self.firstItem)
+        case .secondFirst:
+            return natural.firstItem.isUIEqual(to: self.secondItem)
+        case .secondSecond:
+            return natural.firstItem.isUIEqual(to: self.firstItem)
+        case .none:
+            return false
+        }
+    }
+
+    private func isFirstAttributeEqual(_ natural: Natural, with order: ItemOrder) -> Bool {
+        switch order {
+        case .firstFirst:
+            return natural.firstAttribute.isEqual(to: self.firstAttribute)
+        case .firstSecond:
+            return natural.firstAttribute.isEqual(to: self.secondAttribute)
+        case .secondFirst:
+            guard let secondAttribute = natural.secondAttribute else {
+                return self.firstAttribute == .notAnAttribute
+            }
+
+            return secondAttribute.isEqual(to: self.firstAttribute)
+        case .secondSecond:
+            guard let secondAttribute = natural.secondAttribute else {
+                return self.secondAttribute == .notAnAttribute
+            }
+
+            return secondAttribute.isEqual(to: self.secondAttribute)
+        case .none:
+            return false
+        }
+    }
+
+    private func isSecondAttributeEqual(_ natural: Natural, with order: ItemOrder) -> Bool {
+        switch order {
+        case .firstFirst:
+            guard let secondAttribute = natural.secondAttribute else {
+                return self.secondAttribute == .notAnAttribute
+            }
+
+            return secondAttribute.isEqual(to: self.secondAttribute)
+        case .firstSecond:
+            guard let secondAttribute = natural.secondAttribute else {
+                return self.firstAttribute == .notAnAttribute
+            }
+
+            return secondAttribute.isEqual(to: self.firstAttribute)
+        case .secondFirst:
+            return natural.firstAttribute.isEqual(to: self.secondAttribute)
+        case .secondSecond:
+            return natural.firstAttribute.isEqual(to: self.firstAttribute)
+        case .none:
+            return false
+        }
+    }
+
+    func isEqual(_ natural: Natural) -> Bool {
+        let order = self.isFirstItemEqual(natural)
+
+        if case .none = order {
+            return false
+        }
+
+        guard self.isSecondItemEqual(natural, with: order) else {
+            return false
+        }
+
+        guard self.isFirstAttributeEqual(natural, with: order) else {
+            return false
+        }
+
+        guard self.isSecondItemEqual(natural, with: order) else {
+            return false
+        }
+
+        if let relation = natural.relation, self.relation != relation {
+            return false
+        }
+
+        if let priority = natural.priority, self.priority != priority {
+            return false
+        }
+
+        if let constant = natural.constant, self.constant != constant {
+            return false
+        }
+
+        if let multiplier = natural.multiplier, self.multiplier != multiplier {
+            return false
+        }
+
+        return true
+    }
+}
+
 protocol GenericConstraint {
     var constraint: NSLayoutConstraint { get }
 }
@@ -242,28 +379,34 @@ extension NSLayoutConstraint.Attribute {
     }
 }
 
+extension NSObject {
+    func isUIEqual(to object: AnyObject?) -> Bool {
+        if let view = self as? UIView {
+            if let guide = object as? UILayoutGuide {
+                return view === guide.owningView
+            }
+        }
+
+        if let guide = self as? UILayoutGuide {
+            if let view = object as? UIView {
+                return guide.owningView === view
+            }
+        }
+
+        return self === object
+    }
+}
+
 extension NSLayoutConstraint.Natural {
     var thatExists: [NSLayoutConstraint] {
         let secondItem = self.secondItem ?? self.firstItem.uiSuperitem
         let firstItemConstraints = self.firstItem.uiConstraints
         let secondItemConstraints = secondItem?.uiConstraints ?? []
-        let mayBeNil = self.secondAttribute == nil || self.secondAttribute == .notAnAttribute
 
         let constraints = firstItemConstraints + secondItemConstraints
 
         return constraints.filter {
-            let check = [Bool]([
-                $0.firstItem === self.firstItem,
-                secondItem == nil || secondItem === $0.secondItem || (mayBeNil && $0.secondItem == nil),
-                self.firstAttribute.isEqual(to: $0.firstAttribute),
-                self.secondAttribute == nil || self.secondAttribute?.isEqual(to: $0.secondAttribute) ?? false,
-                self.relation == nil || self.relation == $0.relation,
-                self.priority == nil || self.priority == $0.priority,
-                self.constant == nil || self.constant == $0.constant,
-                self.multiplier == nil || self.multiplier == self.multiplier
-            ])
-
-            return check.allSatisfy { $0 }
+            $0.isEqual(self)
         }
     }
 }
@@ -384,12 +527,14 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
     private let constant: CGFloat?
     private let priority: UILayoutPriority?
     private let multiplier: CGFloat?
+    private let isActive: Bool?
 
     init(_ constraintBuilder: Constraint<Ref>) {
         self.constraintBuilder = constraintBuilder
         self.constant = nil
         self.priority = nil
         self.multiplier = nil
+        self.isActive = nil
     }
 
     private init(_ original: ConstraintUpdate, editable: Editable) {
@@ -397,6 +542,7 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
         self.constant = editable.constant
         self.priority = editable.priority
         self.multiplier = editable.multiplier
+        self.isActive = editable.isActive
     }
 
     func edit(_ edit: @escaping (Editable) -> Void) -> Self {
@@ -409,11 +555,13 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
         var constant: CGFloat?
         var priority: UILayoutPriority?
         var multiplier: CGFloat?
+        var isActive: Bool?
 
         init(_ update: ConstraintUpdate) {
             self.constant = update.constant
             self.priority = update.priority
             self.multiplier = update.multiplier
+            self.isActive = update.isActive
         }
     }
 
@@ -457,11 +605,12 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
         }
 
         guard let constraint = constraints.first?.thatExists.first else {
-            return false
+            return !(self.isActive ?? true)
         }
 
         constraint.constant = toUpdateConstraint.constant ?? constraint.constant
         constraint.priority = toUpdateConstraint.priority ?? constraint.priority
+        constraint.isActive = self.isActive ?? true
 
         return true
     }
@@ -500,6 +649,12 @@ public extension ConstraintUpdate {
     func priority(_ priority: UILayoutPriority) -> Self {
         self.edit {
             $0.priority = priority
+        }
+    }
+
+    func isActive(_ flag: Bool) -> Self {
+        self.edit {
+            $0.isActive = flag
         }
     }
 }

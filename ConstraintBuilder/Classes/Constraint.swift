@@ -393,7 +393,7 @@ internal extension NSObject {
             return view.constraints
         case let guide as UILayoutGuide:
             return guide.owningView?.constraints.filter {
-                $0.firstItem === guide
+                $0.firstItem === guide || $0.secondItem === guide
             } ?? []
         default:
             fatalError()
