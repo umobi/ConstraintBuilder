@@ -138,54 +138,6 @@ public extension Constraint {
     }
 }
 
-private extension Constraint {
-    class Editable {
-        var secondItem: NSObject?
-        var firstAttribute: Set<NSLayoutConstraint.Attribute>
-        var relation: NSLayoutConstraint.Relation?
-        private(set) var secondAttribute: Set<NSLayoutConstraint.Attribute>
-        var priority: UILayoutPriority?
-        var constant: CGFloat?
-        var multiplier: CGFloat?
-
-        init(_ builder: Constraint<Ref>) {
-            self.secondItem = builder.secondItem
-            self.firstAttribute = builder.firstAttribute
-            self.relation = builder.relation
-            self.secondAttribute = builder.secondAttribute
-            self.priority = builder.priority
-            self.constant = builder.constant
-            self.multiplier = builder.multiplier
-        }
-
-        func secondAttribute(_ reference: Constraint<Ref>) {
-            if reference.firstAttribute.isEmpty {
-                self.secondAttribute = self.firstAttribute
-                return
-            }
-
-            if reference.firstAttribute.count == 1 {
-                self.secondAttribute = reference.firstAttribute
-                return
-            }
-
-            guard reference.firstAttribute.count == self.firstAttribute.count && (reference.firstAttribute.allSatisfy {
-                self.firstAttribute.contains($0)
-            }) else {
-                fatalError()
-            }
-
-            self.secondAttribute = reference.firstAttribute
-        }
-    }
-
-    func edit(_ edit: @escaping (Editable) -> Void) -> Self {
-        let editable = Editable(self)
-        edit(editable)
-        return .init(self, editable: editable)
-    }
-}
-
 public extension Constraint where Ref == ConstraintYReference {
     var top: Self {
         self.edit {
@@ -326,30 +278,6 @@ public extension Constraint {
 }
 
 extension Constraint {
-    struct SecondItem {
-        let item: NSObject
-        let attribute: NSLayoutConstraint.Attribute
-
-        init?(_ constraint: Constraint<Ref>, firstAttribute: NSLayoutConstraint.Attribute) {
-            guard let item = constraint.secondItem ?? firstAttribute.needsItem(constraint.firstItem) else {
-                return nil
-            }
-
-            self.item = item
-            self.attribute = {
-                if let attribute = constraint.secondAttribute.first(where: { $0 == firstAttribute }) {
-                    return attribute
-                }
-
-                if let attribute = constraint.secondAttribute.first {
-                    return attribute
-                }
-
-                return firstAttribute
-            }()
-        }
-    }
-
     var constraints: [NSLayoutConstraint.Natural] {
         return self.firstAttribute.map { firstAttribute in
             let secondItem = SecondItem(self, firstAttribute: firstAttribute)
@@ -375,86 +303,76 @@ extension Constraint {
     }
 }
 
-internal extension NSObject {
-    var uiSuperitem: NSObject? {
-        switch self {
-        case let view as UIView:
-            return view.superview
-        case let guide as UILayoutGuide:
-            return guide.owningView?.superview
-        default:
-            fatalError()
+private extension Constraint {
+    class Editable {
+        var secondItem: NSObject?
+        var firstAttribute: Set<NSLayoutConstraint.Attribute>
+        var relation: NSLayoutConstraint.Relation?
+        private(set) var secondAttribute: Set<NSLayoutConstraint.Attribute>
+        var priority: UILayoutPriority?
+        var constant: CGFloat?
+        var multiplier: CGFloat?
+
+        init(_ builder: Constraint<Ref>) {
+            self.secondItem = builder.secondItem
+            self.firstAttribute = builder.firstAttribute
+            self.relation = builder.relation
+            self.secondAttribute = builder.secondAttribute
+            self.priority = builder.priority
+            self.constant = builder.constant
+            self.multiplier = builder.multiplier
+        }
+
+        func secondAttribute(_ reference: Constraint<Ref>) {
+            if reference.firstAttribute.isEmpty {
+                self.secondAttribute = self.firstAttribute
+                return
+            }
+
+            if reference.firstAttribute.count == 1 {
+                self.secondAttribute = reference.firstAttribute
+                return
+            }
+
+            guard reference.firstAttribute.count == self.firstAttribute.count && (reference.firstAttribute.allSatisfy {
+                self.firstAttribute.contains($0)
+            }) else {
+                fatalError()
+            }
+
+            self.secondAttribute = reference.firstAttribute
         }
     }
 
-    var uiConstraints: [NSLayoutConstraint] {
-        switch self {
-        case let view as UIView:
-            return view.constraints
-        case let guide as UILayoutGuide:
-            return guide.owningView?.constraints.filter {
-                $0.firstItem === guide || $0.secondItem === guide
-            } ?? []
-        default:
-            fatalError()
-        }
-    }
-}
-
-private extension NSLayoutConstraint.Relation {
-    func invertIfNeeded(_ attribute: NSLayoutConstraint.Attribute) -> NSLayoutConstraint.Relation {
-        switch self {
-        case .equal:
-            return self
-        case .lessThanOrEqual:
-            return attribute.isNegative ? .greaterThanOrEqual : self
-        case .greaterThanOrEqual:
-            return attribute.isNegative ? .lessThanOrEqual : self
-        @unknown default:
-            return self
-        }
-    }
-}
-
-private extension NSLayoutConstraint.Attribute {
-    var isNegative: Bool {
-        switch self {
-        case .bottom, .bottomMargin, .trailing, .trailingMargin, .right, .rightMargin:
-            return true
-        case .centerY, .centerYWithinMargins, .lastBaseline:
-            return true
-        default:
-            return false
-        }
-    }
-
-    func needsItem(_ firstItem: NSObject) -> NSObject? {
-        switch self {
-        case .top, .topMargin, .bottom, .bottomMargin:
-            return firstItem.uiSuperitem
-        case .leading, .leadingMargin, .trailing, .trailingMargin:
-            return firstItem.uiSuperitem
-        case .left, .leftMargin, .right, .rightMargin:
-            return firstItem.uiSuperitem
-        case .lastBaseline, .firstBaseline:
-            return firstItem.uiSuperitem
-        case .centerX, .centerXWithinMargins, .centerY, .centerYWithinMargins:
-            return firstItem.uiSuperitem
-        case .height, .width, .notAnAttribute:
-            return nil
-        @unknown default:
-            return nil
-        }
+    func edit(_ edit: @escaping (Editable) -> Void) -> Self {
+        let editable = Editable(self)
+        edit(editable)
+        return .init(self, editable: editable)
     }
 }
 
-extension NSLayoutConstraint.Attribute {
-    var isValid: Bool {
-        switch self {
-        case .top, .topMargin, .bottom, .bottomMargin, .leading, .leadingMargin, .trailing, .trailingMargin, .left, .leftMargin, .right, .rightMargin, .lastBaseline, .firstBaseline, .centerX, .centerXWithinMargins, .centerY, .centerYWithinMargins, .height, .width, .notAnAttribute:
-            return true
-        @unknown default:
-            return false
+extension Constraint {
+    struct SecondItem {
+        let item: NSObject
+        let attribute: NSLayoutConstraint.Attribute
+
+        init?(_ constraint: Constraint<Ref>, firstAttribute: NSLayoutConstraint.Attribute) {
+            guard let item = constraint.secondItem ?? firstAttribute.needsItem(constraint.firstItem) else {
+                return nil
+            }
+
+            self.item = item
+            self.attribute = {
+                if let attribute = constraint.secondAttribute.first(where: { $0 == firstAttribute }) {
+                    return attribute
+                }
+
+                if let attribute = constraint.secondAttribute.first {
+                    return attribute
+                }
+
+                return firstAttribute
+            }()
         }
     }
 }
