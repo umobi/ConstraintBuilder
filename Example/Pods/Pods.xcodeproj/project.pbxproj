@@ -11,6 +11,16 @@
 		0C0D2585243CC5E100B76AB4 /* ContraintReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0D2584243CC5E100B76AB4 /* ContraintReference.swift */; };
 		0C0D2587243CC61F00B76AB4 /* ConstraintType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0D2586243CC61F00B76AB4 /* ConstraintType.swift */; };
 		0C0D2589243CC63E00B76AB4 /* UIKit+ConstraintBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C0D2588243CC63E00B76AB4 /* UIKit+ConstraintBuilder.swift */; };
+		0C5385A6243F8AAA00A015B8 /* ConstraintUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385A5243F8AAA00A015B8 /* ConstraintUpdate.swift */; };
+		0C5385A8243F8AD200A015B8 /* ConstraintUpdatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385A7243F8AD200A015B8 /* ConstraintUpdatable.swift */; };
+		0C5385AA243F8AFA00A015B8 /* LayoutConstraint.Natural.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385A9243F8AFA00A015B8 /* LayoutConstraint.Natural.swift */; };
+		0C5385AC243F8B6D00A015B8 /* ConstraintSearchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385AB243F8B6D00A015B8 /* ConstraintSearchable.swift */; };
+		0C5385AE243F8B9B00A015B8 /* Object+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385AD243F8B9B00A015B8 /* Object+Utils.swift */; };
+		0C5385B0243F8BC700A015B8 /* NSLayoutConstraint+Natural+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385AF243F8BC700A015B8 /* NSLayoutConstraint+Natural+Equatable.swift */; };
+		0C5385B2243F8C0300A015B8 /* GenericConstraint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385B1243F8C0300A015B8 /* GenericConstraint.swift */; };
+		0C5385B4243F8C1F00A015B8 /* NSLayoutConstraint.Attribute+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385B3243F8C1F00A015B8 /* NSLayoutConstraint.Attribute+Utils.swift */; };
+		0C5385B6243F8C5B00A015B8 /* NSLayoutConstraint.Relation+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385B5243F8C5B00A015B8 /* NSLayoutConstraint.Relation+Utils.swift */; };
+		0C5385BB243F8D4F00A015B8 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5385BA243F8D4F00A015B8 /* Config.swift */; };
 		1E80FE37DB3F244E7C2857C91CC6012D /* Pods-ConstraintBuilder_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 601BEA4E1155CEDBFF118A2C26B634DF /* Pods-ConstraintBuilder_Tests-dummy.m */; };
 		2C093FF86F7050B2E1A6CDA18905FE8B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
 		CA5BAB8A57AAA660CB715CC591996F0D /* ConstraintBuilder-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B7CCE82FFF3263B657FE23A85699B09D /* ConstraintBuilder-dummy.m */; };
@@ -35,6 +45,16 @@
 		0C0D2584243CC5E100B76AB4 /* ContraintReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContraintReference.swift; path = ConstraintBuilder/Classes/ContraintReference.swift; sourceTree = "<group>"; };
 		0C0D2586243CC61F00B76AB4 /* ConstraintType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConstraintType.swift; path = ConstraintBuilder/Classes/ConstraintType.swift; sourceTree = "<group>"; };
 		0C0D2588243CC63E00B76AB4 /* UIKit+ConstraintBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIKit+ConstraintBuilder.swift"; path = "ConstraintBuilder/Classes/UIKit+ConstraintBuilder.swift"; sourceTree = "<group>"; };
+		0C5385A5243F8AAA00A015B8 /* ConstraintUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConstraintUpdate.swift; path = ConstraintBuilder/Classes/ConstraintUpdate.swift; sourceTree = "<group>"; };
+		0C5385A7243F8AD200A015B8 /* ConstraintUpdatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConstraintUpdatable.swift; path = ConstraintBuilder/Classes/ConstraintUpdatable.swift; sourceTree = "<group>"; };
+		0C5385A9243F8AFA00A015B8 /* LayoutConstraint.Natural.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LayoutConstraint.Natural.swift; path = ConstraintBuilder/Classes/LayoutConstraint.Natural.swift; sourceTree = "<group>"; };
+		0C5385AB243F8B6D00A015B8 /* ConstraintSearchable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConstraintSearchable.swift; path = ConstraintBuilder/Classes/ConstraintSearchable.swift; sourceTree = "<group>"; };
+		0C5385AD243F8B9B00A015B8 /* Object+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Object+Utils.swift"; sourceTree = "<group>"; };
+		0C5385AF243F8BC700A015B8 /* NSLayoutConstraint+Natural+Equatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "NSLayoutConstraint+Natural+Equatable.swift"; path = "ConstraintBuilder/Classes/NSLayoutConstraint+Natural+Equatable.swift"; sourceTree = "<group>"; };
+		0C5385B1243F8C0300A015B8 /* GenericConstraint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GenericConstraint.swift; path = ConstraintBuilder/Classes/GenericConstraint.swift; sourceTree = "<group>"; };
+		0C5385B3243F8C1F00A015B8 /* NSLayoutConstraint.Attribute+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint.Attribute+Utils.swift"; sourceTree = "<group>"; };
+		0C5385B5243F8C5B00A015B8 /* NSLayoutConstraint.Relation+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSLayoutConstraint.Relation+Utils.swift"; sourceTree = "<group>"; };
+		0C5385BA243F8D4F00A015B8 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Config.swift; path = ConstraintBuilder/Classes/Config.swift; sourceTree = "<group>"; };
 		0D7C63FAE97D5302FF21BD2075CDF62F /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		192B6DA66C8C320448B0601F17D41C15 /* Pods-ConstraintBuilder_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-ConstraintBuilder_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -81,14 +101,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0C5385B9243F8D1D00A015B8 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				0C5385B3243F8C1F00A015B8 /* NSLayoutConstraint.Attribute+Utils.swift */,
+				0C5385B5243F8C5B00A015B8 /* NSLayoutConstraint.Relation+Utils.swift */,
+				0C5385AD243F8B9B00A015B8 /* Object+Utils.swift */,
+			);
+			name = Utils;
+			path = ConstraintBuilder/Classes/Utils;
+			sourceTree = "<group>";
+		};
 		25BC48ECCBF47100D37DA9E9CBC9AC06 /* ConstraintBuilder */ = {
 			isa = PBXGroup;
 			children = (
 				7679D240EBC788942B8E16CCCD516758 /* Constraint.swift */,
 				0C0D2582243CC5C000B76AB4 /* Constraintable.swift */,
+				0C5385AB243F8B6D00A015B8 /* ConstraintSearchable.swift */,
+				0C5385B1243F8C0300A015B8 /* GenericConstraint.swift */,
+				0C5385A9243F8AFA00A015B8 /* LayoutConstraint.Natural.swift */,
+				0C5385A5243F8AAA00A015B8 /* ConstraintUpdate.swift */,
+				0C5385A7243F8AD200A015B8 /* ConstraintUpdatable.swift */,
 				0C0D2584243CC5E100B76AB4 /* ContraintReference.swift */,
 				0C0D2586243CC61F00B76AB4 /* ConstraintType.swift */,
+				0C5385AF243F8BC700A015B8 /* NSLayoutConstraint+Natural+Equatable.swift */,
 				0C0D2588243CC63E00B76AB4 /* UIKit+ConstraintBuilder.swift */,
+				0C5385BA243F8D4F00A015B8 /* Config.swift */,
+				0C5385B9243F8D1D00A015B8 /* Utils */,
 				369C836E18AB6832EC1C1B9BEFF881A8 /* Pod */,
 				C564A088A397BFF40EB1CFA55EE16634 /* Support Files */,
 			);
@@ -299,11 +338,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C5385AC243F8B6D00A015B8 /* ConstraintSearchable.swift in Sources */,
+				0C5385B4243F8C1F00A015B8 /* NSLayoutConstraint.Attribute+Utils.swift in Sources */,
+				0C5385A6243F8AAA00A015B8 /* ConstraintUpdate.swift in Sources */,
+				0C5385B0243F8BC700A015B8 /* NSLayoutConstraint+Natural+Equatable.swift in Sources */,
 				0C0D2585243CC5E100B76AB4 /* ContraintReference.swift in Sources */,
 				CA5BAB8A57AAA660CB715CC591996F0D /* ConstraintBuilder-dummy.m in Sources */,
 				E184500BAE5039B62AD83619E4048E3F /* Constraint.swift in Sources */,
+				0C5385A8243F8AD200A015B8 /* ConstraintUpdatable.swift in Sources */,
 				0C0D2589243CC63E00B76AB4 /* UIKit+ConstraintBuilder.swift in Sources */,
+				0C5385AE243F8B9B00A015B8 /* Object+Utils.swift in Sources */,
+				0C5385B2243F8C0300A015B8 /* GenericConstraint.swift in Sources */,
 				0C0D2583243CC5C000B76AB4 /* Constraintable.swift in Sources */,
+				0C5385AA243F8AFA00A015B8 /* LayoutConstraint.Natural.swift in Sources */,
+				0C5385BB243F8D4F00A015B8 /* Config.swift in Sources */,
+				0C5385B6243F8C5B00A015B8 /* NSLayoutConstraint.Relation+Utils.swift in Sources */,
 				0C0D2587243CC61F00B76AB4 /* ConstraintType.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

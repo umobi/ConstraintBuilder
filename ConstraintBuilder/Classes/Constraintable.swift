@@ -8,8 +8,8 @@
 import Foundation
 import UIKit
 
-public struct Constraintable {
-    fileprivate let firstItem: NSObject
+public struct Constraintable: ConstraintSearchable {
+    internal let firstItem: NSObject
 
     internal init(_ firstItem: NSObject) {
         self.firstItem = firstItem
@@ -160,13 +160,61 @@ public extension Constraintable {
 public extension Constraintable {
     static func activate(_ constraints: [ConstraintType]) {
         NSLayoutConstraint.activate(constraints.reduce([NSLayoutConstraint]()) {
-            $0 + $1.constraints
+            $0 + $1.constraints.map {
+                $0.constraint
+            }
         })
     }
 
     static func activate(_ constraints: ConstraintType...) {
         NSLayoutConstraint.activate(constraints.reduce([NSLayoutConstraint]()) {
-            $0 + $1.constraints
+            $0 + $1.constraints.map {
+                $0.constraint
+            }
         })
+    }
+}
+
+public extension Constraintable {
+    static func deactivate(_ constraints: [ConstraintSearchable]) {
+        NSLayoutConstraint.deactivate(constraints.reduce([NSLayoutConstraint]()) {
+            $0 + $1.constraints.reduce([NSLayoutConstraint]()) {
+                $0 + $1.thatExists
+            }
+        })
+    }
+
+    static func deactivate(_ constraints: ConstraintSearchable...) {
+        NSLayoutConstraint.deactivate(constraints.reduce([NSLayoutConstraint]()) {
+            $0 + $1.constraints.reduce([NSLayoutConstraint]()) {
+                $0 + $1.thatExists
+            }
+        })
+    }
+}
+
+public extension Constraintable {
+    static func update(_ constraints: [ConstraintUpdatable]) {
+        var toDelete: [NSLayoutConstraint] = []
+        var toCreate: [ConstraintType] = []
+
+        constraints.forEach {
+            if let constraint = $0.constraintToDeactivate {
+                toDelete.append(constraint)
+            }
+
+            if $0.updateConstraintIfNeeded() {
+                return
+            }
+
+            toCreate.append($0.build)
+        }
+
+        NSLayoutConstraint.deactivate(toDelete)
+        self.activate(toCreate)
+    }
+
+    static func update(_ constraints: ConstraintUpdatable...) {
+        self.update(constraints)
     }
 }

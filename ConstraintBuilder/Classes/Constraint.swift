@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public struct Constraint<Ref: ContraintReference>: ConstraintType {
+public struct Constraint<Ref: ConstraintReference>: ConstraintType {
     private let firstItem: NSObject
     private let secondItem: NSObject?
     private let firstAttribute: Set<NSLayoutConstraint.Attribute>
@@ -138,52 +138,6 @@ public extension Constraint {
     }
 }
 
-private extension Constraint {
-    class Editable {
-        var secondItem: NSObject?
-        var firstAttribute: Set<NSLayoutConstraint.Attribute>
-        var relation: NSLayoutConstraint.Relation?
-        private(set) var secondAttribute: Set<NSLayoutConstraint.Attribute>
-        var priority: UILayoutPriority?
-        var constant: CGFloat?
-        var multiplier: CGFloat?
-
-        init(_ builder: Constraint<Ref>) {
-            self.secondItem = builder.secondItem
-            self.firstAttribute = builder.firstAttribute
-            self.relation = builder.relation
-            self.secondAttribute = builder.secondAttribute
-            self.priority = builder.priority
-            self.constant = builder.constant
-            self.multiplier = builder.multiplier
-        }
-
-        func secondAttribute(_ reference: Constraint<Ref>) {
-            if reference.firstAttribute.isEmpty {
-                self.secondAttribute = self.firstAttribute
-                return
-            }
-
-            if reference.firstAttribute.count == 1 {
-                self.secondAttribute = reference.firstAttribute
-                return
-            }
-
-            guard reference.firstAttribute == self.firstAttribute else {
-                fatalError()
-            }
-
-            self.secondAttribute = reference.firstAttribute
-        }
-    }
-
-    func edit(_ edit: @escaping (Editable) -> Void) -> Self {
-        let editable = Editable(self)
-        edit(editable)
-        return .init(self, editable: editable)
-    }
-}
-
 public extension Constraint where Ref == ConstraintYReference {
     var top: Self {
         self.edit {
@@ -317,6 +271,86 @@ public extension Constraint where Ref == ConstraintYReference {
     }
 }
 
+public extension Constraint {
+    func update() -> ConstraintUpdate<Ref> {
+        .init(self)
+    }
+}
+
+extension Constraint {
+    var constraints: [NSLayoutConstraint.Natural] {
+        return self.firstAttribute.map { firstAttribute in
+            let secondItem = SecondItem(self, firstAttribute: firstAttribute)
+            let constant: CGFloat? = {
+                guard let constant = self.constant else {
+                    return nil
+                }
+
+                return (firstAttribute.isNegative ? -1 : 1) * constant
+            }()
+
+            return NSLayoutConstraint.Natural(
+                firstItem: self.firstItem,
+                secondItem: secondItem?.item,
+                firstAttribute: firstAttribute,
+                relation: self.relation?.invertIfNeeded(firstAttribute),
+                secondAttribute: secondItem?.attribute,
+                priority: self.priority,
+                constant: constant,
+                multiplier: self.multiplier
+            )
+        }
+    }
+}
+
+private extension Constraint {
+    class Editable {
+        var secondItem: NSObject?
+        var firstAttribute: Set<NSLayoutConstraint.Attribute>
+        var relation: NSLayoutConstraint.Relation?
+        private(set) var secondAttribute: Set<NSLayoutConstraint.Attribute>
+        var priority: UILayoutPriority?
+        var constant: CGFloat?
+        var multiplier: CGFloat?
+
+        init(_ builder: Constraint<Ref>) {
+            self.secondItem = builder.secondItem
+            self.firstAttribute = builder.firstAttribute
+            self.relation = builder.relation
+            self.secondAttribute = builder.secondAttribute
+            self.priority = builder.priority
+            self.constant = builder.constant
+            self.multiplier = builder.multiplier
+        }
+
+        func secondAttribute(_ reference: Constraint<Ref>) {
+            if reference.firstAttribute.isEmpty {
+                self.secondAttribute = self.firstAttribute
+                return
+            }
+
+            if reference.firstAttribute.count == 1 {
+                self.secondAttribute = reference.firstAttribute
+                return
+            }
+
+            guard reference.firstAttribute.count == self.firstAttribute.count && (reference.firstAttribute.allSatisfy {
+                self.firstAttribute.contains($0)
+            }) else {
+                fatalError()
+            }
+
+            self.secondAttribute = reference.firstAttribute
+        }
+    }
+
+    func edit(_ edit: @escaping (Editable) -> Void) -> Self {
+        let editable = Editable(self)
+        edit(editable)
+        return .init(self, editable: editable)
+    }
+}
+
 extension Constraint {
     struct SecondItem {
         let item: NSObject
@@ -339,65 +373,6 @@ extension Constraint {
 
                 return firstAttribute
             }()
-        }
-    }
-
-    var constraints: [NSLayoutConstraint] {
-        return self.firstAttribute.map { firstAttribute in
-            let secondItem = SecondItem(self, firstAttribute: firstAttribute)
-
-            return NSLayoutConstraint(
-                item: self.firstItem,
-                attribute: firstAttribute,
-                relatedBy: self.relation ?? .equal,
-                toItem: secondItem?.item,
-                attribute: secondItem?.attribute ?? .notAnAttribute,
-                multiplier: self.multiplier ?? 1,
-                constant: (firstAttribute.isNegative ? -1 : 1) * (self.constant ?? 0)
-            )
-        }
-    }
-}
-
-private extension NSObject {
-    var superUIItem: NSObject? {
-        switch self {
-        case let view as UIView:
-            return view.superview
-        case let guide as UILayoutGuide:
-            return guide.owningView?.superview
-        default:
-            fatalError()
-        }
-    }
-}
-
-private extension NSLayoutConstraint.Attribute {
-    var isNegative: Bool {
-        switch self {
-        case .bottom, .bottomMargin, .trailing, .trailingMargin, .right, .rightMargin:
-            return true
-        case .centerY, .centerYWithinMargins, .lastBaseline:
-            return true
-        default:
-            return false
-        }
-    }
-
-    func needsItem(_ firstItem: NSObject) -> NSObject? {
-        switch self {
-        case .top, .topMargin, .bottom, .bottomMargin:
-            return firstItem.superUIItem
-        case .leading, .leadingMargin, .trailing, .trailingMargin:
-            return firstItem.superUIItem
-        case .left, .leftMargin, .right, .rightMargin:
-            return firstItem.superUIItem
-        case .lastBaseline, .firstBaseline:
-            return firstItem.superUIItem
-        case .centerX, .centerXWithinMargins, .centerY, .centerYWithinMargins:
-            return firstItem.superUIItem
-        case .height, .width, .notAnAttribute:
-            return nil
         }
     }
 }

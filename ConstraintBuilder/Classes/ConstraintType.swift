@@ -8,10 +8,10 @@
 import Foundation
 import UIKit
 
-public protocol ConstraintType {}
+public protocol ConstraintType: ConstraintSearchable {}
 
 extension ConstraintType {
-    var constraints: [NSLayoutConstraint] {
+    var constraints: [NSLayoutConstraint.Natural] {
         switch self {
         case let xRef as ConstraintX:
             return xRef.constraints

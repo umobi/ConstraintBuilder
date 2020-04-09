@@ -7,13 +7,13 @@
 
 import Foundation
 
-public protocol ContraintReference {}
+public protocol ConstraintReference {}
 
-public struct ConstraintYReference: ContraintReference {}
-public struct ConstraintXReference: ContraintReference {}
-public struct ConstraintDimensionReference: ContraintReference {}
-public struct ConstraintEdgesReference: ContraintReference {}
-public struct ConstraintCenterReference: ContraintReference {}
+public struct ConstraintYReference: ConstraintReference {}
+public struct ConstraintXReference: ConstraintReference {}
+public struct ConstraintDimensionReference: ConstraintReference {}
+public struct ConstraintEdgesReference: ConstraintReference {}
+public struct ConstraintCenterReference: ConstraintReference {}
 
 public typealias ConstraintX = Constraint<ConstraintXReference>
 public typealias ConstraintY = Constraint<ConstraintYReference>

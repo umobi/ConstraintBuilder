@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ConstraintBuilder'
-  s.version          = '1.0.0-alpha.2'
+  s.version          = '1.0.0'
   s.summary          = 'A short description of ConstraintBuilder.'
 
 # This description is used to generate tags and improve search results.
