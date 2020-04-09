@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 public struct Constraintable: ConstraintSearchable {
-    fileprivate let firstItem: NSObject
+    internal let firstItem: NSObject
 
     internal init(_ firstItem: NSObject) {
         self.firstItem = firstItem
