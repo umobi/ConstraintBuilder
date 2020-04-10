@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ConstraintBuilder'
-  s.version          = '1.0.0'
-  s.summary          = 'A short description of ConstraintBuilder.'
+  s.version          = '1.0.1'
+  s.summary          = 'UIKit constraint builder with activate, deactivate and update methods'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -30,8 +30,9 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '10.0'
   s.tvos.deployment_target = '10.0'
+  s.swift_version = '5.1'
 
-  s.source_files = 'ConstraintBuilder/Classes/**/*'
+  s.source_files = 'Sources/ConstraintBuilder/Classes/**/*'
   
   # s.resource_bundles = {
   #   'ConstraintBuilder' => ['ConstraintBuilder/Assets/*.png']

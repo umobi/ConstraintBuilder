@@ -12,6 +12,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0CA9F0A92440A8B7006F6902 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
 		146070C0C0415F7E722A6C3C /* Pods_ConstraintBuilder_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ConstraintBuilder_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		34C04A861729705EE917A0C1 /* Pods-ConstraintBuilder_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ConstraintBuilder_Tests.debug.xcconfig"; path = "Target Support Files/Pods-ConstraintBuilder_Tests/Pods-ConstraintBuilder_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		4F22C333253BA9FDF31A7686 /* ConstraintBuilder.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = ConstraintBuilder.podspec; path = ../ConstraintBuilder.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -46,6 +47,7 @@
 		607FACC71AFB9204008FA782 = {
 			isa = PBXGroup;
 			children = (
+				0CA9F0A92440A8B7006F6902 /* Package.swift */,
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
