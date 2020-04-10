@@ -21,6 +21,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension NSLayoutConstraint.Relation {
     func invertIfNeeded(_ attribute: NSLayoutConstraint.Attribute) -> NSLayoutConstraint.Relation {

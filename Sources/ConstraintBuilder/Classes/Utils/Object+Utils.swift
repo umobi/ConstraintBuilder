@@ -21,6 +21,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension NSObject {
     func isUIEqual(to object: AnyObject?) -> Bool {

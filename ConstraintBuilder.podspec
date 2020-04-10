@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ConstraintBuilder'
-  s.version          = '1.0.1'
+  s.version          = '1.0.2'
   s.summary          = 'UIKit constraint builder with activate, deactivate and update methods'
 
 # This description is used to generate tags and improve search results.
