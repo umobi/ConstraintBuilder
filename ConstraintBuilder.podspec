@@ -31,7 +31,7 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '10.0'
   s.tvos.deployment_target = '10.0'
 
-  s.source_files = 'ConstraintBuilder/Classes/**/*'
+  s.source_files = 'Sources/ConstraintBuilder/Classes/**/*'
   
   # s.resource_bundles = {
   #   'ConstraintBuilder' => ['ConstraintBuilder/Assets/*.png']
