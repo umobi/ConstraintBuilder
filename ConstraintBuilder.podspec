@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ConstraintBuilder'
-  s.version          = '1.0.2'
+  s.version          = '1.0.3'
   s.summary          = 'UIKit constraint builder with activate, deactivate and update methods'
   s.homepage         = 'https://github.com/umobi/ConstraintBuilder'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
