@@ -71,7 +71,7 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
             return self.multiplier != nil
         }
 
-        return self.multiplier != nil && self.priority != nil
+        return self.multiplier != nil || self.priority != nil
     }
 
     var constraintToDeactivate: NSLayoutConstraint? {
