@@ -21,6 +21,7 @@
 //
 
 import Foundation
+import CoreGraphics
 
 public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
     private let constraintBuilder: Constraint<Ref>
