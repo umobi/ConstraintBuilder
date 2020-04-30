@@ -21,18 +21,17 @@
 //
 
 import Foundation
-import UIKit
 
-extension NSObject {
+extension CBObject {
     func isUIEqual(to object: AnyObject?) -> Bool {
-        if let view = self as? UIView {
-            if let guide = object as? UILayoutGuide {
+        if let view = self as? CBView {
+            if let guide = object as? CBLayoutGuide {
                 return view === guide.owningView
             }
         }
 
-        if let guide = self as? UILayoutGuide {
-            if let view = object as? UIView {
+        if let guide = self as? CBLayoutGuide {
+            if let view = object as? CBView {
                 return guide.owningView === view
             }
         }
@@ -41,23 +40,23 @@ extension NSObject {
     }
 }
 
-extension NSObject {
-    var uiSuperitem: NSObject? {
+extension CBObject {
+    var uiSuperitem: CBObject? {
         switch self {
-        case let view as UIView:
+        case let view as CBView:
             return view.superview
-        case let guide as UILayoutGuide:
+        case let guide as CBLayoutGuide:
             return guide.owningView?.superview
         default:
             fatalError()
         }
     }
 
-    var uiConstraints: [NSLayoutConstraint] {
+    var uiConstraints: [CBLayoutConstraint] {
         switch self {
-        case let view as UIView:
+        case let view as CBView:
             return view.constraints
-        case let guide as UILayoutGuide:
+        case let guide as CBLayoutGuide:
             return guide.owningView?.constraints.filter {
                 $0.firstItem === guide || $0.secondItem === guide
             } ?? []

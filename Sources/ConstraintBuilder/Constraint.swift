@@ -21,19 +21,18 @@
 //
 
 import Foundation
-import UIKit
 
 public struct Constraint<Ref: ConstraintReference>: ConstraintType {
-    private let firstItem: NSObject
-    private let secondItem: NSObject?
-    private let firstAttribute: Set<NSLayoutConstraint.Attribute>
-    private let relation: NSLayoutConstraint.Relation?
-    private let secondAttribute: Set<NSLayoutConstraint.Attribute>
-    private let priority: UILayoutPriority?
+    private let firstItem: CBObject
+    private let secondItem: CBObject?
+    private let firstAttribute: Set<CBLayoutConstraint.Attribute>
+    private let relation: CBLayoutConstraint.Relation?
+    private let secondAttribute: Set<CBLayoutConstraint.Attribute>
+    private let priority: CBLayoutPriority?
     private let constant: CGFloat?
     private let multiplier: CGFloat?
 
-    internal init(_ firstItem: NSObject) {
+    internal init(_ firstItem: CBObject) {
         self.firstItem = firstItem
         self.secondItem = nil
         self.firstAttribute = []
@@ -55,7 +54,7 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
         self.multiplier = editable.multiplier
     }
 
-    internal func firstAttribute(_ firstAttribute: NSLayoutConstraint.Attribute...) -> Self {
+    internal func firstAttribute(_ firstAttribute: CBLayoutConstraint.Attribute...) -> Self {
         self.edit {
             $0.firstAttribute = .init(firstAttribute)
         }
@@ -63,6 +62,13 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
 }
 
 public extension Constraint {
+    var equal: Self {
+        self.edit {
+            $0.relation = .equal
+            $0.constant = nil
+        }
+    }
+
     func equalTo(_ constant: CGFloat) -> Self {
         self.edit {
             $0.relation = .equal
@@ -78,7 +84,7 @@ public extension Constraint {
         }
     }
 
-    func equalTo(_ object: NSObject) -> Self {
+    func equalTo(_ object: CBObject) -> Self {
         self.edit {
             $0.relation = .equal
             $0.secondItem = object
@@ -88,6 +94,13 @@ public extension Constraint {
 }
 
 public extension Constraint {
+
+    var greaterThanOrEqual: Self {
+        self.edit {
+            $0.relation = .greaterThanOrEqual
+            $0.constant = nil
+        }
+    }
 
     func greaterThanOrEqualTo(_ constant: CGFloat) -> Self {
         self.edit {
@@ -104,7 +117,7 @@ public extension Constraint {
         }
     }
 
-    func greaterThanOrEqualTo(_ object: NSObject) -> Self {
+    func greaterThanOrEqualTo(_ object: CBObject) -> Self {
         self.edit {
             $0.relation = .greaterThanOrEqual
             $0.secondItem = object
@@ -114,6 +127,13 @@ public extension Constraint {
 }
 
 public extension Constraint {
+    
+    var lessThanOrEqual: Self {
+        self.edit {
+            $0.relation = .lessThanOrEqual
+            $0.constant = nil
+        }
+    }
 
     func lessThanOrEqualTo(_ constant: CGFloat) -> Self {
         self.edit {
@@ -130,7 +150,7 @@ public extension Constraint {
         }
     }
 
-    func lessThanOrEqualTo(_ object: NSObject) -> Self {
+    func lessThanOrEqualTo(_ object: CBObject) -> Self {
         self.edit {
             $0.relation = .lessThanOrEqual
             $0.secondItem = object
@@ -153,7 +173,7 @@ public extension Constraint {
         }
     }
 
-    func priority(_ priority: UILayoutPriority) -> Self {
+    func priority(_ priority: CBLayoutPriority) -> Self {
         self.edit {
             $0.priority = priority
         }
@@ -167,11 +187,13 @@ public extension Constraint where Ref == ConstraintYReference {
         }
     }
 
+    #if !os(macOS)
     var topMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.topMargin)
         }
     }
+    #endif
 
     var bottom: Self {
         self.edit {
@@ -193,11 +215,13 @@ public extension Constraint where Ref == ConstraintXReference {
         }
     }
 
+    #if !os(macOS)
     var leadingMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.leadingMargin)
         }
     }
+    #endif
 
     var left: Self {
         self.edit {
@@ -205,11 +229,13 @@ public extension Constraint where Ref == ConstraintXReference {
         }
     }
 
+    #if !os(macOS)
     var leftMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.leftMargin)
         }
     }
+    #endif
 }
 
 public extension Constraint where Ref == ConstraintXReference {
@@ -219,11 +245,13 @@ public extension Constraint where Ref == ConstraintXReference {
         }
     }
 
+    #if !os(macOS)
     var trailingMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.trailingMargin)
         }
     }
+    #endif
 
     var right: Self {
         self.edit {
@@ -231,11 +259,13 @@ public extension Constraint where Ref == ConstraintXReference {
         }
     }
 
+    #if !os(macOS)
     var rightMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.rightMargin)
         }
     }
+    #endif
 }
 
 public extension Constraint where Ref == ConstraintCenterReference {
@@ -245,11 +275,13 @@ public extension Constraint where Ref == ConstraintCenterReference {
         }
     }
 
+    #if !os(macOS)
     var centerYWithinMargins: Self {
         self.edit {
             $0.firstAttribute.insert(.centerYWithinMargins)
         }
     }
+    #endif
 
     var centerX: Self {
         self.edit {
@@ -257,11 +289,13 @@ public extension Constraint where Ref == ConstraintCenterReference {
         }
     }
 
+    #if !os(macOS)
     var centerXWithinMargins: Self {
         self.edit {
             $0.firstAttribute.insert(.centerXWithinMargins)
         }
     }
+    #endif
 }
 
 public extension Constraint where Ref == ConstraintDimensionReference {
@@ -300,7 +334,7 @@ public extension Constraint {
 }
 
 extension Constraint {
-    var constraints: [NSLayoutConstraint.Natural] {
+    var constraints: [CBLayoutConstraint.Natural] {
         return self.firstAttribute.map { firstAttribute in
             let secondItem = SecondItem(self, firstAttribute: firstAttribute)
             let constant: CGFloat? = {
@@ -311,7 +345,7 @@ extension Constraint {
                 return (firstAttribute.isNegative ? -1 : 1) * constant
             }()
 
-            return NSLayoutConstraint.Natural(
+            return CBLayoutConstraint.Natural(
                 firstItem: self.firstItem,
                 secondItem: secondItem?.item,
                 firstAttribute: firstAttribute,
@@ -327,11 +361,11 @@ extension Constraint {
 
 private extension Constraint {
     class Editable {
-        var secondItem: NSObject?
-        var firstAttribute: Set<NSLayoutConstraint.Attribute>
-        var relation: NSLayoutConstraint.Relation?
-        private(set) var secondAttribute: Set<NSLayoutConstraint.Attribute>
-        var priority: UILayoutPriority?
+        var secondItem: CBObject?
+        var firstAttribute: Set<CBLayoutConstraint.Attribute>
+        var relation: CBLayoutConstraint.Relation?
+        private(set) var secondAttribute: Set<CBLayoutConstraint.Attribute>
+        var priority: CBLayoutPriority?
         var constant: CGFloat?
         var multiplier: CGFloat?
 
@@ -375,10 +409,10 @@ private extension Constraint {
 
 extension Constraint {
     struct SecondItem {
-        let item: NSObject
-        let attribute: NSLayoutConstraint.Attribute
+        let item: CBObject
+        let attribute: CBLayoutConstraint.Attribute
 
-        init?(_ constraint: Constraint<Ref>, firstAttribute: NSLayoutConstraint.Attribute) {
+        init?(_ constraint: Constraint<Ref>, firstAttribute: CBLayoutConstraint.Attribute) {
             guard let item = constraint.secondItem ?? firstAttribute.needsItem(constraint.firstItem) else {
                 return nil
             }

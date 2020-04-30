@@ -21,12 +21,11 @@
 //
 
 import Foundation
-import UIKit
 
 public protocol ConstraintSearchable {}
 
 extension ConstraintSearchable {
-    var constraints: [NSLayoutConstraint.Natural] {
+    var constraints: [CBLayoutConstraint.Natural] {
         switch self {
         case let constraintType as ConstraintType:
             return constraintType.constraints
@@ -39,7 +38,7 @@ extension ConstraintSearchable {
 }
 
 extension Constraintable {
-    var searchableConstraints: [NSLayoutConstraint.Natural] {
+    var searchableConstraints: [CBLayoutConstraint.Natural] {
         self.firstItem.uiConstraints.compactMap {
             $0.natural
         }

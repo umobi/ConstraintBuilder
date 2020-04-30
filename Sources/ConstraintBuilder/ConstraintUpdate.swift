@@ -21,12 +21,11 @@
 //
 
 import Foundation
-import UIKit
 
 public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
     private let constraintBuilder: Constraint<Ref>
     private let constant: CGFloat?
-    private let priority: UILayoutPriority?
+    private let priority: CBLayoutPriority?
     private let multiplier: CGFloat?
     private let isActive: Bool?
 
@@ -54,7 +53,7 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
 
     class Editable {
         var constant: CGFloat?
-        var priority: UILayoutPriority?
+        var priority: CBLayoutPriority?
         var multiplier: CGFloat?
         var isActive: Bool?
 
@@ -74,7 +73,7 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
         return self.multiplier != nil || self.priority != nil
     }
 
-    var constraintToDeactivate: NSLayoutConstraint? {
+    var constraintToDeactivate: CBLayoutConstraint? {
         guard self.needsToDeleteConstraint else {
             return nil
         }
@@ -147,7 +146,7 @@ public extension ConstraintUpdate {
         }
     }
 
-    func priority(_ priority: UILayoutPriority) -> Self {
+    func priority(_ priority: CBLayoutPriority) -> Self {
         self.edit {
             $0.priority = priority
         }

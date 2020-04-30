@@ -21,12 +21,11 @@
 //
 
 import Foundation
-import UIKit
 
 public struct Constraintable: ConstraintSearchable {
-    internal let firstItem: NSObject
+    internal let firstItem: CBObject
 
-    internal init(_ firstItem: NSObject) {
+    internal init(_ firstItem: CBObject) {
         self.firstItem = firstItem
     }
 }
@@ -45,10 +44,12 @@ public extension Constraintable {
             .firstAttribute(.top)
     }
 
+    #if !os(macOS)
     var topMargin: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.topMargin)
     }
+    #endif
 }
 
 public extension Constraintable {
@@ -58,10 +59,12 @@ public extension Constraintable {
             .firstAttribute(.bottom)
     }
 
+    #if !os(macOS)
     var bottomMargin: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.bottomMargin)
     }
+    #endif
 }
 
 public extension Constraintable {
@@ -71,10 +74,12 @@ public extension Constraintable {
             .firstAttribute(.leading)
     }
 
+    #if !os(macOS)
     var leadingMargin: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.leadingMargin)
     }
+    #endif
 }
 
 public extension Constraintable {
@@ -83,10 +88,12 @@ public extension Constraintable {
             .firstAttribute(.left)
     }
 
+    #if !os(macOS)
     var leftMargin: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.leftMargin)
     }
+    #endif
 }
 
 public extension Constraintable {
@@ -95,10 +102,12 @@ public extension Constraintable {
             .firstAttribute(.trailing)
     }
 
+    #if !os(macOS)
     var trailingMargin: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.trailingMargin)
     }
+    #endif
 }
 
 public extension Constraintable {
@@ -107,10 +116,12 @@ public extension Constraintable {
             .firstAttribute(.right)
     }
 
+    #if !os(macOS)
     var rightMargin: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.rightMargin)
     }
+    #endif
 }
 
 public extension Constraintable {
@@ -119,20 +130,24 @@ public extension Constraintable {
             .firstAttribute(.centerX)
     }
 
+    #if !os(macOS)
     var centerXWithinMargins: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.centerXWithinMargins)
     }
+    #endif
 
     var centerY: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.centerY)
     }
 
+    #if !os(macOS)
     var centerYWithinMargins: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.centerYWithinMargins)
     }
+    #endif
 }
 
 public extension Constraintable {
@@ -141,10 +156,12 @@ public extension Constraintable {
             .firstAttribute(.centerX, .centerY)
     }
 
+    #if !os(macOS)
     var centerWithinMargins: ConstraintCenter {
         ConstraintCenter(self.firstItem)
             .firstAttribute(.centerXWithinMargins, .centerYWithinMargins)
     }
+    #endif
 }
 
 public extension Constraintable {
@@ -174,7 +191,7 @@ public extension Constraintable {
 
 public extension Constraintable {
     static func activate(_ constraints: [ConstraintType]) {
-        NSLayoutConstraint.activate(constraints.reduce([NSLayoutConstraint]()) {
+        CBLayoutConstraint.activate(constraints.reduce([CBLayoutConstraint]()) {
             $0 + $1.constraints.map {
                 $0.constraint
             }
@@ -182,7 +199,7 @@ public extension Constraintable {
     }
 
     static func activate(_ constraints: ConstraintType...) {
-        NSLayoutConstraint.activate(constraints.reduce([NSLayoutConstraint]()) {
+        CBLayoutConstraint.activate(constraints.reduce([CBLayoutConstraint]()) {
             $0 + $1.constraints.map {
                 $0.constraint
             }
@@ -192,16 +209,16 @@ public extension Constraintable {
 
 public extension Constraintable {
     static func deactivate(_ constraints: [ConstraintSearchable]) {
-        NSLayoutConstraint.deactivate(constraints.reduce([NSLayoutConstraint]()) {
-            $0 + $1.constraints.reduce([NSLayoutConstraint]()) {
+        CBLayoutConstraint.deactivate(constraints.reduce([CBLayoutConstraint]()) {
+            $0 + $1.constraints.reduce([CBLayoutConstraint]()) {
                 $0 + $1.thatExists
             }
         })
     }
 
     static func deactivate(_ constraints: ConstraintSearchable...) {
-        NSLayoutConstraint.deactivate(constraints.reduce([NSLayoutConstraint]()) {
-            $0 + $1.constraints.reduce([NSLayoutConstraint]()) {
+        CBLayoutConstraint.deactivate(constraints.reduce([CBLayoutConstraint]()) {
+            $0 + $1.constraints.reduce([CBLayoutConstraint]()) {
                 $0 + $1.thatExists
             }
         })
@@ -210,7 +227,7 @@ public extension Constraintable {
 
 public extension Constraintable {
     static func update(_ constraints: [ConstraintUpdatable]) {
-        var toDelete: [NSLayoutConstraint] = []
+        var toDelete: [CBLayoutConstraint] = []
         var toCreate: [ConstraintType] = []
 
         constraints.forEach {
@@ -225,7 +242,7 @@ public extension Constraintable {
             toCreate.append($0.build)
         }
 
-        NSLayoutConstraint.deactivate(toDelete)
+        CBLayoutConstraint.deactivate(toDelete)
         self.activate(toCreate)
     }
 

@@ -21,60 +21,67 @@
 //
 
 import Foundation
-import UIKit
 
-extension NSLayoutConstraint.Attribute {
-    func isEqual(to attribute: NSLayoutConstraint.Attribute) -> Bool {
+extension CBLayoutConstraint.Attribute {
+    func isEqual(to attribute: CBLayoutConstraint.Attribute) -> Bool {
         switch self {
         case .leading, .left:
             return [.leading, .left].contains(attribute)
-        case .leadingMargin, .leftMargin:
-            return [.leadingMargin, .leftMargin].contains(attribute)
         case .trailing, .right:
             return [.trailing, .right].contains(attribute)
+        #if !os(macOS)
+        case .leadingMargin, .leftMargin:
+            return [.leadingMargin, .leftMargin].contains(attribute)
         case .trailingMargin, .rightMargin:
             return [.trailingMargin, .rightMargin].contains(attribute)
+        #endif
         default:
             return self == attribute
         }
     }
 }
 
-extension NSLayoutConstraint.Attribute {
+extension CBLayoutConstraint.Attribute {
     var isValid: Bool {
         switch self {
-        case .top, .topMargin, .bottom, .bottomMargin, .leading, .leadingMargin, .trailing, .trailingMargin, .left, .leftMargin, .right, .rightMargin, .lastBaseline, .firstBaseline, .centerX, .centerXWithinMargins, .centerY, .centerYWithinMargins, .height, .width, .notAnAttribute:
+        case .top, .bottom, .leading, .trailing, .left, .right, .lastBaseline, .firstBaseline, .centerX, .centerY, .height, .width, .notAnAttribute:
             return true
+        #if !os(macOS)
+        case .topMargin, .bottomMargin, .leadingMargin, .trailingMargin, .leftMargin, .rightMargin, .centerXWithinMargins, .centerYWithinMargins:
+            return true
+        #endif
         @unknown default:
             return false
         }
     }
 }
 
-extension NSLayoutConstraint.Attribute {
+extension CBLayoutConstraint.Attribute {
     var isNegative: Bool {
         switch self {
-        case .bottom, .bottomMargin, .trailing, .trailingMargin, .right, .rightMargin:
+        case .bottom, .trailing, .right, .centerY, .lastBaseline:
             return true
-        case .centerY, .centerYWithinMargins, .lastBaseline:
+
+        #if !os(macOS)
+        case .bottomMargin, .trailingMargin, .rightMargin, .centerYWithinMargins:
             return true
+        #endif
+
         default:
             return false
         }
     }
 
-    func needsItem(_ firstItem: NSObject) -> NSObject? {
+    func needsItem(_ firstItem: CBObject) -> CBObject? {
         switch self {
-        case .top, .topMargin, .bottom, .bottomMargin:
+        case .top, .leading, .bottom, .trailing, .left, .right, .lastBaseline, .firstBaseline, .centerX, .centerY:
             return firstItem.uiSuperitem
-        case .leading, .leadingMargin, .trailing, .trailingMargin:
+
+        #if !os(macOS)
+        case .topMargin, .leadingMargin, .bottomMargin, .trailingMargin, .leftMargin, .rightMargin, .centerXWithinMargins, .centerYWithinMargins:
             return firstItem.uiSuperitem
-        case .left, .leftMargin, .right, .rightMargin:
-            return firstItem.uiSuperitem
-        case .lastBaseline, .firstBaseline:
-            return firstItem.uiSuperitem
-        case .centerX, .centerXWithinMargins, .centerY, .centerYWithinMargins:
-            return firstItem.uiSuperitem
+        #endif
+            
         case .height, .width, .notAnAttribute:
             return nil
         @unknown default:

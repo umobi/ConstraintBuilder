@@ -21,9 +21,8 @@
 //
 
 import Foundation
-import UIKit
 
-extension NSLayoutConstraint {
+extension CBLayoutConstraint {
     enum ItemOrder {
         case firstFirst
         case secondFirst

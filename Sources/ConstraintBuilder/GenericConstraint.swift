@@ -21,8 +21,7 @@
 //
 
 import Foundation
-import UIKit
 
 protocol GenericConstraint {
-    var constraint: NSLayoutConstraint { get }
+    var constraint: CBLayoutConstraint { get }
 }

@@ -21,15 +21,14 @@
 //
 
 import Foundation
-import UIKit
 
-public extension UIView {
+public extension CBView {
     var cbuild: Constraintable {
         .init(self)
     }
 }
 
-public extension UILayoutGuide {
+public extension CBLayoutGuide {
     var cbuild: Constraintable {
         .init(self)
     }

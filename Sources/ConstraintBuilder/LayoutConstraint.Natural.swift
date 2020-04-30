@@ -21,21 +21,20 @@
 //
 
 import Foundation
-import UIKit
 
-extension NSLayoutConstraint {
+extension CBLayoutConstraint {
     struct Natural: GenericConstraint {
-        let firstItem: NSObject
-        let secondItem: NSObject?
-        let firstAttribute: NSLayoutConstraint.Attribute
-        let relation: NSLayoutConstraint.Relation?
-        let secondAttribute: NSLayoutConstraint.Attribute?
-        let priority: UILayoutPriority?
+        let firstItem: CBObject
+        let secondItem: CBObject?
+        let firstAttribute: CBLayoutConstraint.Attribute
+        let relation: CBLayoutConstraint.Relation?
+        let secondAttribute: CBLayoutConstraint.Attribute?
+        let priority: CBLayoutPriority?
         let constant: CGFloat?
         let multiplier: CGFloat?
 
-        var constraint: NSLayoutConstraint {
-            let constraint = NSLayoutConstraint(
+        var constraint: CBLayoutConstraint {
+            let constraint = CBLayoutConstraint(
                 item: self.firstItem,
                 attribute: self.firstAttribute,
                 relatedBy: self.relation ?? .equal,
@@ -51,15 +50,15 @@ extension NSLayoutConstraint {
     }
 }
 
-extension NSLayoutConstraint {
+extension CBLayoutConstraint {
     var natural: Natural? {
-        guard let firstItem = self.firstItem as? NSObject, self.firstAttribute.isValid else {
+        guard let firstItem = self.firstItem as? CBObject, self.firstAttribute.isValid else {
             return nil
         }
 
         return Natural(
             firstItem: firstItem,
-            secondItem: self.secondItem as? NSObject,
+            secondItem: self.secondItem as? CBObject,
             firstAttribute: self.firstAttribute,
             relation: self.relation,
             secondAttribute: self.secondAttribute,
@@ -70,8 +69,8 @@ extension NSLayoutConstraint {
     }
 }
 
-extension NSLayoutConstraint.Natural {
-    var thatExists: [NSLayoutConstraint] {
+extension CBLayoutConstraint.Natural {
+    var thatExists: [CBLayoutConstraint] {
         let secondItem = self.secondItem ?? self.firstItem.uiSuperitem
         let firstItemConstraints = self.firstItem.uiConstraints
         let secondItemConstraints = secondItem?.uiConstraints ?? []
@@ -85,7 +84,7 @@ extension NSLayoutConstraint.Natural {
 }
 
 extension Constraintable {
-    var constraints: [NSLayoutConstraint.Natural] {
+    var constraints: [CBLayoutConstraint.Natural] {
         (self.firstItem.uiConstraints + (self.firstItem.uiSuperitem?.uiConstraints ?? []))
             .filter { $0.firstItem === self.firstItem }
             .compactMap { $0.natural }
