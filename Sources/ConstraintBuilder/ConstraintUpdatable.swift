@@ -21,13 +21,12 @@
 //
 
 import Foundation
-import UIKit
 
 public protocol ConstraintUpdatable {}
 
 extension ConstraintUpdatable {
 
-    var constraintToDeactivate: NSLayoutConstraint? {
+    var constraintToDeactivate: CBLayoutConstraint? {
         switch self {
         case let xRef as ConstraintUpdate<ConstraintXReference>:
             return xRef.constraintToDeactivate

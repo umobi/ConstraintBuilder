@@ -22,3 +22,37 @@
 
 import Foundation
 
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+
+public typealias CBObject = NSObject
+public typealias CBLayoutConstraint = NSLayoutConstraint
+
+#if os(macOS)
+public typealias CBView = NSView
+public typealias CBLayoutGuide = NSLayoutGuide
+public typealias CBLayoutPriority = NSLayoutConstraint.Priority
+public typealias CBStackView = NSStackView
+public typealias CBWindow = NSWindow
+public typealias CBViewController = NSViewController
+public typealias CBVisualEffectView = NSVisualEffectView
+#else
+public typealias CBView = UIView
+public typealias CBLayoutGuide = UILayoutGuide
+public typealias CBLayoutPriority = UILayoutPriority
+public typealias CBStackView = UIStackView
+public typealias CBWindow = UIWindow
+public typealias CBViewController = UIViewController
+public typealias CBVisualEffectView = UIVisualEffectView
+#endif
+
+#if os(macOS)
+extension CBView {
+    var next: NSResponder? {
+        self.nextResponder
+    }
+}
+#endif

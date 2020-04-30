@@ -21,12 +21,11 @@
 //
 
 import Foundation
-import UIKit
 
 public protocol ConstraintType: ConstraintSearchable {}
 
 extension ConstraintType {
-    var constraints: [NSLayoutConstraint.Natural] {
+    var constraints: [CBLayoutConstraint.Natural] {
         switch self {
         case let xRef as ConstraintX:
             return xRef.constraints
