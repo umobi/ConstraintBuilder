@@ -21,6 +21,7 @@
 //
 
 import Foundation
+import CoreGraphics
 
 extension CBLayoutConstraint {
     struct Natural: GenericConstraint {

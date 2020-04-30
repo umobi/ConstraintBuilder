@@ -21,6 +21,7 @@
 //
 
 import Foundation
+import CoreGraphics
 
 public struct Constraint<Ref: ConstraintReference>: ConstraintType {
     private let firstItem: CBObject
