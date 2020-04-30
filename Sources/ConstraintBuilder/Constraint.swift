@@ -62,6 +62,13 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
 }
 
 public extension Constraint {
+    var equal: Self {
+        self.edit {
+            $0.relation = .equal
+            $0.constant = nil
+        }
+    }
+
     func equalTo(_ constant: CGFloat) -> Self {
         self.edit {
             $0.relation = .equal
@@ -88,6 +95,13 @@ public extension Constraint {
 
 public extension Constraint {
 
+    var greaterThanOrEqual: Self {
+        self.edit {
+            $0.relation = .greaterThanOrEqual
+            $0.constant = nil
+        }
+    }
+
     func greaterThanOrEqualTo(_ constant: CGFloat) -> Self {
         self.edit {
             $0.relation = .greaterThanOrEqual
@@ -113,6 +127,13 @@ public extension Constraint {
 }
 
 public extension Constraint {
+    
+    var lessThanOrEqual: Self {
+        self.edit {
+            $0.relation = .lessThanOrEqual
+            $0.constant = nil
+        }
+    }
 
     func lessThanOrEqualTo(_ constant: CGFloat) -> Self {
         self.edit {
