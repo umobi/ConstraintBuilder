@@ -92,7 +92,14 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
             return self.multiplier != nil && self.multiplier != constraint.multiplier ? constraint : nil
         }
 
-        return (self.multiplier != nil && self.multiplier != constraint.multiplier) || (self.priority != nil && self.priority != constraint.priority) ? constraint : nil
+        guard
+            self.multiplier != nil && self.multiplier != constraint.multiplier ||
+            self.priority != nil && self.priority != constraint.priority
+        else {
+            return nil
+        }
+
+        return constraint
     }
 
     func updateConstraintIfNeeded() -> Bool {

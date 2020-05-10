@@ -10,6 +10,6 @@ final class ConstraintBuilderTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testExample", testExample)
     ]
 }
