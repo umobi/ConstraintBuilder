@@ -21,7 +21,7 @@ jobs:
     - name: cocoapods lint
       run: |
           pod lib lint --allow-warnings
-          
+
     - name: Build iOS
       run: |
         swift package generate-xcodeproj
@@ -33,4 +33,3 @@ jobs:
         swift package generate-xcodeproj
         xcodebuild build -sdk appletvos -scheme 'ConstraintBuilder-Package'
         xcodebuild test -destination 'name=Apple TV' -scheme 'ConstraintBuilder-Package'
-        
