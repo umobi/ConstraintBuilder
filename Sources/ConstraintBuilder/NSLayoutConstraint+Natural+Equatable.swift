@@ -155,6 +155,10 @@ extension CBLayoutConstraint {
             return false
         }
 
+        if let isActive = natural.isActive, self.isActive != isActive {
+            return false
+        }
+
         return true
     }
 }

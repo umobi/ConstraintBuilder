@@ -33,6 +33,7 @@ extension CBLayoutConstraint {
         let priority: CBLayoutPriority?
         let constant: CGFloat?
         let multiplier: CGFloat?
+        let isActive: Bool?
 
         var constraint: CBLayoutConstraint {
             let constraint = CBLayoutConstraint(
@@ -46,6 +47,7 @@ extension CBLayoutConstraint {
             )
 
             constraint.priority = self.priority ?? .required
+            constraint.isActive = self.isActive ?? true
             return constraint
         }
     }
@@ -65,7 +67,8 @@ extension CBLayoutConstraint {
             secondAttribute: self.secondAttribute,
             priority: self.priority,
             constant: self.constant,
-            multiplier: self.multiplier
+            multiplier: self.multiplier,
+            isActive: self.isActive
         )
     }
 }

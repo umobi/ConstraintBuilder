@@ -32,6 +32,7 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
     private let priority: CBLayoutPriority?
     private let constant: CGFloat?
     private let multiplier: CGFloat?
+    private let isActive: Bool?
 
     internal init(_ firstItem: CBObject) {
         self.firstItem = firstItem
@@ -42,6 +43,7 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
         self.priority = nil
         self.constant = nil
         self.multiplier = nil
+        self.isActive = nil
     }
 
     fileprivate init(_ original: Constraint<Ref>, editable: Editable) {
@@ -53,6 +55,7 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
         self.priority = editable.priority
         self.constant = editable.constant
         self.multiplier = editable.multiplier
+        self.isActive = editable.isActive
     }
 
     internal func firstAttribute(_ firstAttribute: CBLayoutConstraint.Attribute...) -> Self {
@@ -88,7 +91,8 @@ extension Constraint {
                 secondAttribute: secondItem?.attribute,
                 priority: self.priority,
                 constant: constant,
-                multiplier: self.multiplier
+                multiplier: self.multiplier,
+                isActive: self.isActive
             )
         }
     }
@@ -103,6 +107,7 @@ internal extension Constraint {
         var priority: CBLayoutPriority?
         var constant: CGFloat?
         var multiplier: CGFloat?
+        var isActive: Bool?
 
         init(_ builder: Constraint<Ref>) {
             self.secondItem = builder.secondItem
@@ -112,6 +117,7 @@ internal extension Constraint {
             self.priority = builder.priority
             self.constant = builder.constant
             self.multiplier = builder.multiplier
+            self.isActive = builder.isActive
         }
 
         func secondAttribute(_ reference: Constraint<Ref>) {

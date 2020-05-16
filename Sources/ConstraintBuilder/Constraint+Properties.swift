@@ -288,3 +288,11 @@ public extension Constraint where Ref == ConstraintYReference {
         }
     }
 }
+
+public extension Constraint {
+    func isActive(_ isActive: Bool) -> Self {
+        self.edit {
+            $0.isActive = isActive
+        }
+    }
+}

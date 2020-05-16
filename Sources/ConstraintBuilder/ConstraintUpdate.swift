@@ -84,9 +84,13 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
             fatalError()
         }
 
-        guard let constraint = constraints.first?.thatExists.first else {
-            return nil
-        }
+        guard
+            let constraint = constraints.first?.thatExists
+                .filter({ $0.isActive || !(self.isActive ?? true) })
+                .first
+            else {
+                return nil
+            }
 
         if #available(iOS 13, tvOS 13, *) {
             return self.multiplier != nil && self.multiplier != constraint.multiplier ? constraint : nil
