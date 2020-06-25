@@ -27,7 +27,8 @@ import AppKit
 import UIKit
 #endif
 
-/// UICSubview class is a wrapper that will add the subview into superview, but checking the `translatesAutoresizingMaskIntoConstraints` and set to false if is needed
+/// UICSubview class is a wrapper that will add the subview into superview,
+/// but checking the `translatesAutoresizingMaskIntoConstraints` and set to false if is needed
 public extension CBView {
     struct CBSubview<Super: CBView> {
         fileprivate weak var superview: Super!
@@ -73,7 +74,11 @@ public extension CBView.CBSubview {
         #if !os(macOS)
         self.superview.insertSubview(view, at: index)
         #else
-        guard let relativeView = self.superview.subviews.enumerated().first(where: { $0.offset == index })?.element else {
+        guard
+            let relativeView = self.superview.subviews
+                .enumerated()
+                .first(where: { $0.offset == index })?.element
+        else {
             if let lastView = self.superview.subviews.last {
                 self.superview.addSubview(view, positioned: .above, relativeTo: lastView)
             } else {

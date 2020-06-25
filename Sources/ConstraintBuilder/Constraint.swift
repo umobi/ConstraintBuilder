@@ -32,6 +32,7 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
     private let priority: CBLayoutPriority?
     private let constant: CGFloat?
     private let multiplier: CGFloat?
+    private let isActive: Bool?
 
     internal init(_ firstItem: CBObject) {
         self.firstItem = firstItem
@@ -42,6 +43,7 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
         self.priority = nil
         self.constant = nil
         self.multiplier = nil
+        self.isActive = nil
     }
 
     fileprivate init(_ original: Constraint<Ref>, editable: Editable) {
@@ -53,277 +55,12 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
         self.priority = editable.priority
         self.constant = editable.constant
         self.multiplier = editable.multiplier
+        self.isActive = editable.isActive
     }
 
     internal func firstAttribute(_ firstAttribute: CBLayoutConstraint.Attribute...) -> Self {
         self.edit {
             $0.firstAttribute = .init(firstAttribute)
-        }
-    }
-}
-
-public extension Constraint {
-    var equal: Self {
-        self.edit {
-            $0.relation = .equal
-            $0.constant = nil
-        }
-    }
-
-    func equalTo(_ constant: CGFloat) -> Self {
-        self.edit {
-            $0.relation = .equal
-            $0.constant = constant
-        }
-    }
-
-    func equalTo(_ reference: Constraint<Ref>) -> Self {
-        self.edit {
-            $0.relation = .equal
-            $0.secondItem = reference.firstItem
-            $0.secondAttribute(reference)
-        }
-    }
-
-    func equalTo(_ object: CBObject) -> Self {
-        self.edit {
-            $0.relation = .equal
-            $0.secondItem = object
-            $0.secondAttribute(self)
-        }
-    }
-}
-
-public extension Constraint {
-
-    var greaterThanOrEqual: Self {
-        self.edit {
-            $0.relation = .greaterThanOrEqual
-            $0.constant = nil
-        }
-    }
-
-    func greaterThanOrEqualTo(_ constant: CGFloat) -> Self {
-        self.edit {
-            $0.relation = .greaterThanOrEqual
-            $0.constant = constant
-        }
-    }
-
-    func greaterThanOrEqualTo(_ reference: Constraint<Ref>) -> Self {
-        self.edit {
-            $0.relation = .greaterThanOrEqual
-            $0.secondItem = reference.firstItem
-            $0.secondAttribute(reference)
-        }
-    }
-
-    func greaterThanOrEqualTo(_ object: CBObject) -> Self {
-        self.edit {
-            $0.relation = .greaterThanOrEqual
-            $0.secondItem = object
-            $0.secondAttribute(self)
-        }
-    }
-}
-
-public extension Constraint {
-    
-    var lessThanOrEqual: Self {
-        self.edit {
-            $0.relation = .lessThanOrEqual
-            $0.constant = nil
-        }
-    }
-
-    func lessThanOrEqualTo(_ constant: CGFloat) -> Self {
-        self.edit {
-            $0.relation = .lessThanOrEqual
-            $0.constant = constant
-        }
-    }
-
-    func lessThanOrEqualTo(_ reference: Constraint<Ref>) -> Self {
-        self.edit {
-            $0.relation = .lessThanOrEqual
-            $0.secondItem = reference.firstItem
-            $0.secondAttribute(reference)
-        }
-    }
-
-    func lessThanOrEqualTo(_ object: CBObject) -> Self {
-        self.edit {
-            $0.relation = .lessThanOrEqual
-            $0.secondItem = object
-            $0.secondAttribute(self)
-        }
-    }
-}
-
-public extension Constraint {
-
-    func constant(_ constant: CGFloat) -> Self {
-        self.edit {
-            $0.constant = constant
-        }
-    }
-
-    func multiplier(_ multiplier: CGFloat) -> Self {
-        self.edit {
-            $0.multiplier = multiplier
-        }
-    }
-
-    func priority(_ priority: CBLayoutPriority) -> Self {
-        self.edit {
-            $0.priority = priority
-        }
-    }
-}
-
-public extension Constraint where Ref == ConstraintYReference {
-    var top: Self {
-        self.edit {
-            $0.firstAttribute.insert(.bottom)
-        }
-    }
-
-    #if !os(macOS)
-    var topMargin: Self {
-        self.edit {
-            $0.firstAttribute.insert(.topMargin)
-        }
-    }
-    #endif
-
-    var bottom: Self {
-        self.edit {
-            $0.firstAttribute.insert(.bottom)
-        }
-    }
-
-    var bottomMargin: Self {
-        self.edit {
-            $0.firstAttribute.insert(.bottom)
-        }
-    }
-}
-
-public extension Constraint where Ref == ConstraintXReference {
-    var leading: Self {
-        self.edit {
-            $0.firstAttribute.insert(.leading)
-        }
-    }
-
-    #if !os(macOS)
-    var leadingMargin: Self {
-        self.edit {
-            $0.firstAttribute.insert(.leadingMargin)
-        }
-    }
-    #endif
-
-    var left: Self {
-        self.edit {
-            $0.firstAttribute.insert(.left)
-        }
-    }
-
-    #if !os(macOS)
-    var leftMargin: Self {
-        self.edit {
-            $0.firstAttribute.insert(.leftMargin)
-        }
-    }
-    #endif
-}
-
-public extension Constraint where Ref == ConstraintXReference {
-    var trailing: Self {
-        self.edit {
-            $0.firstAttribute.insert(.trailing)
-        }
-    }
-
-    #if !os(macOS)
-    var trailingMargin: Self {
-        self.edit {
-            $0.firstAttribute.insert(.trailingMargin)
-        }
-    }
-    #endif
-
-    var right: Self {
-        self.edit {
-            $0.firstAttribute.insert(.right)
-        }
-    }
-
-    #if !os(macOS)
-    var rightMargin: Self {
-        self.edit {
-            $0.firstAttribute.insert(.rightMargin)
-        }
-    }
-    #endif
-}
-
-public extension Constraint where Ref == ConstraintCenterReference {
-    var centerY: Self {
-        self.edit {
-            $0.firstAttribute.insert(.centerY)
-        }
-    }
-
-    #if !os(macOS)
-    var centerYWithinMargins: Self {
-        self.edit {
-            $0.firstAttribute.insert(.centerYWithinMargins)
-        }
-    }
-    #endif
-
-    var centerX: Self {
-        self.edit {
-            $0.firstAttribute.insert(.centerX)
-        }
-    }
-
-    #if !os(macOS)
-    var centerXWithinMargins: Self {
-        self.edit {
-            $0.firstAttribute.insert(.centerXWithinMargins)
-        }
-    }
-    #endif
-}
-
-public extension Constraint where Ref == ConstraintDimensionReference {
-    var height: Self {
-        self.edit {
-            $0.firstAttribute.insert(.height)
-        }
-    }
-
-    var width: Self {
-        self.edit {
-            $0.firstAttribute.insert(.width)
-        }
-    }
-}
-
-public extension Constraint where Ref == ConstraintYReference {
-
-    var firstBaseline: Self {
-        self.edit {
-            $0.firstAttribute.insert(.firstBaseline)
-        }
-    }
-
-    var lastBaseline: Self {
-        self.edit {
-            $0.firstAttribute.insert(.lastBaseline)
         }
     }
 }
@@ -354,13 +91,14 @@ extension Constraint {
                 secondAttribute: secondItem?.attribute,
                 priority: self.priority,
                 constant: constant,
-                multiplier: self.multiplier
+                multiplier: self.multiplier,
+                isActive: self.isActive
             )
         }
     }
 }
 
-private extension Constraint {
+internal extension Constraint {
     class Editable {
         var secondItem: CBObject?
         var firstAttribute: Set<CBLayoutConstraint.Attribute>
@@ -369,6 +107,7 @@ private extension Constraint {
         var priority: CBLayoutPriority?
         var constant: CGFloat?
         var multiplier: CGFloat?
+        var isActive: Bool?
 
         init(_ builder: Constraint<Ref>) {
             self.secondItem = builder.secondItem
@@ -378,6 +117,7 @@ private extension Constraint {
             self.priority = builder.priority
             self.constant = builder.constant
             self.multiplier = builder.multiplier
+            self.isActive = builder.isActive
         }
 
         func secondAttribute(_ reference: Constraint<Ref>) {
@@ -398,6 +138,10 @@ private extension Constraint {
             }
 
             self.secondAttribute = reference.firstAttribute
+        }
+
+        func secondItem(ofFirstItem reference: Constraint<Ref>) {
+            self.secondItem = reference.firstItem
         }
     }
 

@@ -44,10 +44,17 @@ extension CBLayoutConstraint.Attribute {
 extension CBLayoutConstraint.Attribute {
     var isValid: Bool {
         switch self {
-        case .top, .bottom, .leading, .trailing, .left, .right, .lastBaseline, .firstBaseline, .centerX, .centerY, .height, .width, .notAnAttribute:
+        case .top, .bottom,
+             .leading, .trailing, .left, .right,
+             .lastBaseline, .firstBaseline,
+             .centerX, .centerY,
+             .height, .width,
+             .notAnAttribute:
             return true
         #if !os(macOS)
-        case .topMargin, .bottomMargin, .leadingMargin, .trailingMargin, .leftMargin, .rightMargin, .centerXWithinMargins, .centerYWithinMargins:
+        case .topMargin, .bottomMargin,
+             .leadingMargin, .trailingMargin, .leftMargin, .rightMargin,
+             .centerXWithinMargins, .centerYWithinMargins:
             return true
         #endif
         @unknown default:
@@ -78,10 +85,12 @@ extension CBLayoutConstraint.Attribute {
             return firstItem.uiSuperitem
 
         #if !os(macOS)
-        case .topMargin, .leadingMargin, .bottomMargin, .trailingMargin, .leftMargin, .rightMargin, .centerXWithinMargins, .centerYWithinMargins:
+        case .topMargin, .bottomMargin,
+             .leadingMargin, .trailingMargin, .leftMargin, .rightMargin,
+             .centerXWithinMargins, .centerYWithinMargins:
             return firstItem.uiSuperitem
         #endif
-            
+
         case .height, .width, .notAnAttribute:
             return nil
         @unknown default:
