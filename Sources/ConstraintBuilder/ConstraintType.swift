@@ -22,6 +22,32 @@
 
 import Foundation
 
+@_functionBuilder
+public struct ConstraintableBuilder {
+    static public func buildBlock(_ segments: ConstraintType...) -> ConstraintType {
+        CombinedConstraintables(children: segments)
+    }
+}
+
+internal class CombinedConstraintables: ConstraintType {
+    let children: [ConstraintType]
+
+    init(children: [ConstraintType]) {
+        self.children = children
+    }
+}
+
+internal extension ConstraintType {
+    var zip: [ConstraintType] {
+        switch self {
+        case let views as CombinedConstraintables:
+            return views.children
+        default:
+            return [self]
+        }
+    }
+}
+
 public protocol ConstraintType: ConstraintSearchable {}
 
 extension ConstraintType {

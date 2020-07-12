@@ -198,12 +198,8 @@ public extension Constraintable {
         })
     }
 
-    static func activate(_ constraints: ConstraintType...) {
-        CBLayoutConstraint.activate(constraints.reduce([CBLayoutConstraint]()) {
-            $0 + $1.constraints.map {
-                $0.constraint
-            }
-        })
+    static func activate(@ConstraintableBuilder _ constraints: () -> ConstraintType) {
+        self.activate(constraints().zip)
     }
 }
 
@@ -216,12 +212,8 @@ public extension Constraintable {
         })
     }
 
-    static func deactivate(_ constraints: ConstraintSearchable...) {
-        CBLayoutConstraint.deactivate(constraints.reduce([CBLayoutConstraint]()) {
-            $0 + $1.constraints.reduce([CBLayoutConstraint]()) {
-                $0 + $1.thatExists
-            }
-        })
+    static func deactivate(@ConstraintSearchableBuilder _ constraints: () -> ConstraintSearchable) {
+        self.deactivate(constraints().zip)
     }
 }
 
@@ -246,7 +238,7 @@ public extension Constraintable {
         self.activate(toCreate)
     }
 
-    static func update(_ constraints: ConstraintUpdatable...) {
-        self.update(constraints)
+    static func update(@ConstraintUpdatableBuilder _ constraints: () -> ConstraintUpdatable) {
+        self.update(constraints().zip)
     }
 }

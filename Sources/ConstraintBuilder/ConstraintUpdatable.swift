@@ -22,6 +22,32 @@
 
 import Foundation
 
+@_functionBuilder
+public struct ConstraintUpdatableBuilder {
+    static public func buildBlock(_ segments: ConstraintUpdatable...) -> ConstraintUpdatable {
+        CombinedUpdatables(children: segments)
+    }
+}
+
+internal class CombinedUpdatables: ConstraintUpdatable {
+    let children: [ConstraintUpdatable]
+
+    init(children: [ConstraintUpdatable]) {
+        self.children = children
+    }
+}
+
+internal extension ConstraintUpdatable {
+    var zip: [ConstraintUpdatable] {
+        switch self {
+        case let views as CombinedUpdatables:
+            return views.children
+        default:
+            return [self]
+        }
+    }
+}
+
 public protocol ConstraintUpdatable {}
 
 extension ConstraintUpdatable {
