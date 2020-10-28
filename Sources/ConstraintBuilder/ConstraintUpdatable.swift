@@ -22,22 +22,26 @@
 
 import Foundation
 
-@_functionBuilder
+@_functionBuilder @frozen
 public struct ConstraintUpdatableBuilder {
+    @inline(__always) @inlinable
     static public func buildBlock(_ segments: ConstraintUpdatable...) -> ConstraintUpdatable {
         CombinedUpdatables(children: segments)
     }
 }
 
-internal class CombinedUpdatables: ConstraintUpdatable {
+@usableFromInline
+internal struct CombinedUpdatables: ConstraintUpdatable {
     let children: [ConstraintUpdatable]
 
+    @inline(__always) @usableFromInline
     init(children: [ConstraintUpdatable]) {
         self.children = children
     }
 }
 
 internal extension ConstraintUpdatable {
+    @usableFromInline
     var zip: [ConstraintUpdatable] {
         switch self {
         case let views as CombinedUpdatables:
@@ -52,6 +56,7 @@ public protocol ConstraintUpdatable {}
 
 extension ConstraintUpdatable {
 
+    @usableFromInline
     var constraintToDeactivate: CBLayoutConstraint? {
         switch self {
         case let xRef as ConstraintUpdate<ConstraintXReference>:
@@ -69,6 +74,7 @@ extension ConstraintUpdatable {
         }
     }
 
+    @usableFromInline
     var build: ConstraintType {
         switch self {
         case let xRef as ConstraintUpdate<ConstraintXReference>:
@@ -86,6 +92,7 @@ extension ConstraintUpdatable {
         }
     }
 
+    @usableFromInline
     func updateConstraintIfNeeded() -> Bool {
         switch self {
         case let xRef as ConstraintUpdate<ConstraintXReference>:

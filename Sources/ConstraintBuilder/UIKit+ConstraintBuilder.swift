@@ -23,12 +23,14 @@
 import Foundation
 
 public extension CBView {
+    @inline(__always) @inlinable
     var cbuild: Constraintable {
         .init(self)
     }
 }
 
 public extension CBLayoutGuide {
+    @inline(__always) @inlinable
     var cbuild: Constraintable {
         .init(self)
     }

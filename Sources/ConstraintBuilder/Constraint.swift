@@ -23,6 +23,7 @@
 import Foundation
 import CoreGraphics
 
+@frozen
 public struct Constraint<Ref: ConstraintReference>: ConstraintType {
     private let firstItem: CBObject
     private let secondItem: CBObject?
@@ -34,6 +35,7 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
     private let multiplier: CGFloat?
     private let isActive: Bool?
 
+    @usableFromInline
     internal init(_ firstItem: CBObject) {
         self.firstItem = firstItem
         self.secondItem = nil
@@ -58,6 +60,7 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
         self.isActive = editable.isActive
     }
 
+    @usableFromInline
     internal func firstAttribute(_ firstAttribute: CBLayoutConstraint.Attribute...) -> Self {
         self.edit {
             $0.firstAttribute = .init(firstAttribute)
@@ -66,6 +69,7 @@ public struct Constraint<Ref: ConstraintReference>: ConstraintType {
 }
 
 public extension Constraint {
+    @inlinable @inline(__always)
     func update() -> ConstraintUpdate<Ref> {
         .init(self)
     }
@@ -99,14 +103,29 @@ extension Constraint {
 }
 
 internal extension Constraint {
+    @usableFromInline
     class Editable {
-        var secondItem: CBObject?
-        var firstAttribute: Set<CBLayoutConstraint.Attribute>
-        var relation: CBLayoutConstraint.Relation?
         private(set) var secondAttribute: Set<CBLayoutConstraint.Attribute>
+
+        @usableFromInline
+        var secondItem: CBObject?
+
+        @usableFromInline
+        var firstAttribute: Set<CBLayoutConstraint.Attribute>
+
+        @usableFromInline
+        var relation: CBLayoutConstraint.Relation?
+
+        @usableFromInline
         var priority: CBLayoutPriority?
+
+        @usableFromInline
         var constant: CGFloat?
+
+        @usableFromInline
         var multiplier: CGFloat?
+
+        @usableFromInline
         var isActive: Bool?
 
         init(_ builder: Constraint<Ref>) {
@@ -120,6 +139,7 @@ internal extension Constraint {
             self.isActive = builder.isActive
         }
 
+        @usableFromInline
         func secondAttribute(_ reference: Constraint<Ref>) {
             if reference.firstAttribute.isEmpty {
                 self.secondAttribute = self.firstAttribute
@@ -140,12 +160,14 @@ internal extension Constraint {
             self.secondAttribute = reference.firstAttribute
         }
 
+        @inline(__always) @usableFromInline
         func secondItem(ofFirstItem reference: Constraint<Ref>) {
             self.secondItem = reference.firstItem
         }
     }
 
-    func edit(_ edit: @escaping (Editable) -> Void) -> Self {
+    @inline(__always) @usableFromInline
+    func edit(_ edit: (Editable) -> Void) -> Self {
         let editable = Editable(self)
         edit(editable)
         return .init(self, editable: editable)

@@ -24,6 +24,7 @@ import Foundation
 import CoreGraphics
 
 extension CBLayoutConstraint {
+    @usableFromInline
     struct Natural: GenericConstraint {
         let firstItem: CBObject
         let secondItem: CBObject?
@@ -35,6 +36,7 @@ extension CBLayoutConstraint {
         let multiplier: CGFloat?
         let isActive: Bool?
 
+        @usableFromInline
         var constraint: CBLayoutConstraint {
             let constraint = CBLayoutConstraint(
                 item: self.firstItem,
@@ -54,6 +56,7 @@ extension CBLayoutConstraint {
 }
 
 extension CBLayoutConstraint {
+    @usableFromInline
     var natural: Natural? {
         guard let firstItem = self.firstItem as? CBObject, self.firstAttribute.isValid else {
             return nil
@@ -74,6 +77,7 @@ extension CBLayoutConstraint {
 }
 
 extension CBLayoutConstraint.Natural {
+    @usableFromInline
     var thatExists: [CBLayoutConstraint] {
         let secondItem = self.secondItem ?? self.firstItem.uiSuperitem
         let firstItemConstraints = self.firstItem.uiConstraints
@@ -88,6 +92,7 @@ extension CBLayoutConstraint.Natural {
 }
 
 extension Constraintable {
+    @usableFromInline
     var constraints: [CBLayoutConstraint.Natural] {
         (self.firstItem.uiConstraints + (self.firstItem.uiSuperitem?.uiConstraints ?? []))
             .filter { $0.firstItem === self.firstItem }

@@ -22,15 +22,19 @@
 
 import Foundation
 
+@frozen
 public struct Constraintable: ConstraintSearchable {
+    @usableFromInline
     internal let firstItem: CBObject
 
+    @usableFromInline
     internal init(_ firstItem: CBObject) {
         self.firstItem = firstItem
     }
 }
 
 public extension Constraintable {
+    @inlinable
     var edges: ConstraintEdges {
         ConstraintEdges(self.firstItem)
             .firstAttribute(.top, .leading, .trailing, .bottom)
@@ -39,12 +43,14 @@ public extension Constraintable {
 
 public extension Constraintable {
 
+    @inlinable
     var top: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.top)
     }
 
     #if !os(macOS)
+    @inlinable
     var topMargin: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.topMargin)
@@ -54,12 +60,14 @@ public extension Constraintable {
 
 public extension Constraintable {
 
+    @inlinable
     var bottom: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.bottom)
     }
 
     #if !os(macOS)
+    @inlinable
     var bottomMargin: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.bottomMargin)
@@ -69,12 +77,14 @@ public extension Constraintable {
 
 public extension Constraintable {
 
+    @inlinable
     var leading: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.leading)
     }
 
     #if !os(macOS)
+    @inlinable
     var leadingMargin: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.leadingMargin)
@@ -83,12 +93,14 @@ public extension Constraintable {
 }
 
 public extension Constraintable {
+    @inlinable
     var left: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.left)
     }
 
     #if !os(macOS)
+    @inlinable
     var leftMargin: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.leftMargin)
@@ -97,12 +109,14 @@ public extension Constraintable {
 }
 
 public extension Constraintable {
+    @inlinable
     var trailing: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.trailing)
     }
 
     #if !os(macOS)
+    @inlinable
     var trailingMargin: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.trailingMargin)
@@ -111,12 +125,14 @@ public extension Constraintable {
 }
 
 public extension Constraintable {
+    @inlinable
     var right: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.right)
     }
 
     #if !os(macOS)
+    @inlinable
     var rightMargin: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.rightMargin)
@@ -125,24 +141,28 @@ public extension Constraintable {
 }
 
 public extension Constraintable {
+    @inlinable
     var centerX: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.centerX)
     }
 
     #if !os(macOS)
+    @inlinable
     var centerXWithinMargins: ConstraintX {
         ConstraintX(self.firstItem)
             .firstAttribute(.centerXWithinMargins)
     }
     #endif
 
+    @inlinable
     var centerY: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.centerY)
     }
 
     #if !os(macOS)
+    @inlinable
     var centerYWithinMargins: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.centerYWithinMargins)
@@ -151,12 +171,14 @@ public extension Constraintable {
 }
 
 public extension Constraintable {
+    @inlinable
     var center: ConstraintCenter {
         ConstraintCenter(self.firstItem)
             .firstAttribute(.centerX, .centerY)
     }
 
     #if !os(macOS)
+    @inlinable
     var centerWithinMargins: ConstraintCenter {
         ConstraintCenter(self.firstItem)
             .firstAttribute(.centerXWithinMargins, .centerYWithinMargins)
@@ -165,11 +187,13 @@ public extension Constraintable {
 }
 
 public extension Constraintable {
+    @inlinable
     var height: ConstraintDimension {
         ConstraintDimension(self.firstItem)
             .firstAttribute(.height)
     }
 
+    @inlinable
     var width: ConstraintDimension {
         ConstraintDimension(self.firstItem)
             .firstAttribute(.width)
@@ -178,11 +202,13 @@ public extension Constraintable {
 
 public extension Constraintable {
 
+    @inlinable
     var firstBaseline: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.firstBaseline)
     }
 
+    @inlinable
     var lastBaseline: ConstraintY {
         ConstraintY(self.firstItem)
             .firstAttribute(.lastBaseline)
@@ -190,6 +216,7 @@ public extension Constraintable {
 }
 
 public extension Constraintable {
+    @inlinable
     static func activate(_ constraints: [ConstraintType]) {
         CBLayoutConstraint.activate(constraints.reduce([CBLayoutConstraint]()) {
             $0 + $1.constraints.map {
@@ -198,12 +225,14 @@ public extension Constraintable {
         })
     }
 
+    @inline(__always) @inlinable
     static func activate(@ConstraintableBuilder _ constraints: () -> ConstraintType) {
         self.activate(constraints().zip)
     }
 }
 
 public extension Constraintable {
+    @inlinable
     static func deactivate(_ constraints: [ConstraintSearchable]) {
         CBLayoutConstraint.deactivate(constraints.reduce([CBLayoutConstraint]()) {
             $0 + $1.constraints.reduce([CBLayoutConstraint]()) {
@@ -212,12 +241,14 @@ public extension Constraintable {
         })
     }
 
+    @inline(__always) @inlinable
     static func deactivate(@ConstraintSearchableBuilder _ constraints: () -> ConstraintSearchable) {
         self.deactivate(constraints().zip)
     }
 }
 
 public extension Constraintable {
+    @inlinable
     static func update(_ constraints: [ConstraintUpdatable]) {
         var toDelete: [CBLayoutConstraint] = []
         var toCreate: [ConstraintType] = []
@@ -238,6 +269,7 @@ public extension Constraintable {
         self.activate(toCreate)
     }
 
+    @inline(__always) @inlinable
     static func update(@ConstraintUpdatableBuilder _ constraints: () -> ConstraintUpdatable) {
         self.update(constraints().zip)
     }
