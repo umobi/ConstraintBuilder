@@ -23,6 +23,7 @@
 import Foundation
 import CoreGraphics
 
+@frozen
 public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
     private let constraintBuilder: Constraint<Ref>
     private let constant: CGFloat?
@@ -30,6 +31,7 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
     private let multiplier: CGFloat?
     private let isActive: Bool?
 
+    @usableFromInline
     init(_ constraintBuilder: Constraint<Ref>) {
         self.constraintBuilder = constraintBuilder
         self.constant = nil
@@ -46,16 +48,25 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
         self.isActive = editable.isActive
     }
 
-    func edit(_ edit: @escaping (Editable) -> Void) -> Self {
+    @inline(__always) @usableFromInline
+    func edit(_ edit: (Editable) -> Void) -> Self {
         let editable = Editable(self)
         edit(editable)
         return .init(self, editable: editable)
     }
 
+    @usableFromInline
     class Editable {
+        @usableFromInline
         var constant: CGFloat?
+
+        @usableFromInline
         var priority: CBLayoutPriority?
+
+        @usableFromInline
         var multiplier: CGFloat?
+
+        @usableFromInline
         var isActive: Bool?
 
         init(_ update: ConstraintUpdate) {
@@ -146,24 +157,28 @@ public struct ConstraintUpdate<Ref: ConstraintReference>: ConstraintUpdatable {
 }
 
 public extension ConstraintUpdate {
+    @inlinable
     func constant(_ constant: CGFloat) -> Self {
         self.edit {
             $0.constant = constant
         }
     }
 
+    @inlinable
     func multiplier(_ multiplier: CGFloat) -> Self {
         self.edit {
             $0.multiplier = multiplier
         }
     }
 
+    @inlinable
     func priority(_ priority: CBLayoutPriority) -> Self {
         self.edit {
             $0.priority = priority
         }
     }
 
+    @inlinable
     func isActive(_ flag: Bool) -> Self {
         self.edit {
             $0.isActive = flag

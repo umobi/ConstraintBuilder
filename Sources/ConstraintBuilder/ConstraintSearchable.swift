@@ -22,22 +22,26 @@
 
 import Foundation
 
-@_functionBuilder
+@_functionBuilder @frozen
 public struct ConstraintSearchableBuilder {
+    @inline(__always) @inlinable
     static public func buildBlock(_ segments: ConstraintSearchable...) -> ConstraintSearchable {
         CombinedSearchs(children: segments)
     }
 }
 
-internal class CombinedSearchs: ConstraintSearchable {
+@usableFromInline
+internal struct CombinedSearchs: ConstraintSearchable {
     let children: [ConstraintSearchable]
 
+    @inline(__always) @usableFromInline
     init(children: [ConstraintSearchable]) {
         self.children = children
     }
 }
 
 internal extension ConstraintSearchable {
+    @usableFromInline
     var zip: [ConstraintSearchable] {
         switch self {
         case let views as CombinedSearchs:
@@ -51,6 +55,7 @@ internal extension ConstraintSearchable {
 public protocol ConstraintSearchable {}
 
 extension ConstraintSearchable {
+    @usableFromInline
     var constraints: [CBLayoutConstraint.Natural] {
         switch self {
         case let constraintType as ConstraintType:
@@ -64,6 +69,7 @@ extension ConstraintSearchable {
 }
 
 extension Constraintable {
+    @usableFromInline
     var searchableConstraints: [CBLayoutConstraint.Natural] {
         self.firstItem.uiConstraints.compactMap {
             $0.natural

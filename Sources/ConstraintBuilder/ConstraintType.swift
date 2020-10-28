@@ -22,22 +22,26 @@
 
 import Foundation
 
-@_functionBuilder
+@_functionBuilder @frozen
 public struct ConstraintableBuilder {
+    @inline(__always) @inlinable
     static public func buildBlock(_ segments: ConstraintType...) -> ConstraintType {
         CombinedConstraintables(children: segments)
     }
 }
 
-internal class CombinedConstraintables: ConstraintType {
+@usableFromInline
+internal struct CombinedConstraintables: ConstraintType {
     let children: [ConstraintType]
 
+    @inline(__always) @usableFromInline
     init(children: [ConstraintType]) {
         self.children = children
     }
 }
 
 internal extension ConstraintType {
+    @usableFromInline
     var zip: [ConstraintType] {
         switch self {
         case let views as CombinedConstraintables:
@@ -51,6 +55,7 @@ internal extension ConstraintType {
 public protocol ConstraintType: ConstraintSearchable {}
 
 extension ConstraintType {
+    @usableFromInline
     var constraints: [CBLayoutConstraint.Natural] {
         switch self {
         case let xRef as ConstraintX:

@@ -24,11 +24,11 @@ import Foundation
 
 public protocol ConstraintReference {}
 
-public struct ConstraintYReference: ConstraintReference {}
-public struct ConstraintXReference: ConstraintReference {}
-public struct ConstraintDimensionReference: ConstraintReference {}
-public struct ConstraintEdgesReference: ConstraintReference {}
-public struct ConstraintCenterReference: ConstraintReference {}
+@frozen public struct ConstraintYReference: ConstraintReference {}
+@frozen public struct ConstraintXReference: ConstraintReference {}
+@frozen public struct ConstraintDimensionReference: ConstraintReference {}
+@frozen public struct ConstraintEdgesReference: ConstraintReference {}
+@frozen public struct ConstraintCenterReference: ConstraintReference {}
 
 public typealias ConstraintX = Constraint<ConstraintXReference>
 public typealias ConstraintY = Constraint<ConstraintYReference>

@@ -24,6 +24,7 @@ import Foundation
 import CoreGraphics
 
 public extension Constraint {
+    @inlinable
     var equal: Self {
         self.edit {
             $0.relation = .equal
@@ -31,6 +32,7 @@ public extension Constraint {
         }
     }
 
+    @inlinable
     func equalTo(_ constant: CGFloat) -> Self {
         self.edit {
             $0.relation = .equal
@@ -38,6 +40,7 @@ public extension Constraint {
         }
     }
 
+    @inlinable
     func equalTo(_ reference: Constraint<Ref>) -> Self {
         self.edit {
             $0.relation = .equal
@@ -46,6 +49,7 @@ public extension Constraint {
         }
     }
 
+    @inlinable
     func equalTo(_ object: CBObject) -> Self {
         self.edit {
             $0.relation = .equal
@@ -57,6 +61,7 @@ public extension Constraint {
 
 public extension Constraint {
 
+    @inlinable
     var greaterThanOrEqual: Self {
         self.edit {
             $0.relation = .greaterThanOrEqual
@@ -64,6 +69,7 @@ public extension Constraint {
         }
     }
 
+    @inlinable
     func greaterThanOrEqualTo(_ constant: CGFloat) -> Self {
         self.edit {
             $0.relation = .greaterThanOrEqual
@@ -71,6 +77,7 @@ public extension Constraint {
         }
     }
 
+    @inlinable
     func greaterThanOrEqualTo(_ reference: Constraint<Ref>) -> Self {
         self.edit {
             $0.relation = .greaterThanOrEqual
@@ -79,6 +86,7 @@ public extension Constraint {
         }
     }
 
+    @inlinable
     func greaterThanOrEqualTo(_ object: CBObject) -> Self {
         self.edit {
             $0.relation = .greaterThanOrEqual
@@ -90,6 +98,7 @@ public extension Constraint {
 
 public extension Constraint {
 
+    @inlinable
     var lessThanOrEqual: Self {
         self.edit {
             $0.relation = .lessThanOrEqual
@@ -97,6 +106,7 @@ public extension Constraint {
         }
     }
 
+    @inlinable
     func lessThanOrEqualTo(_ constant: CGFloat) -> Self {
         self.edit {
             $0.relation = .lessThanOrEqual
@@ -104,6 +114,7 @@ public extension Constraint {
         }
     }
 
+    @inlinable
     func lessThanOrEqualTo(_ reference: Constraint<Ref>) -> Self {
         self.edit {
             $0.relation = .lessThanOrEqual
@@ -112,6 +123,7 @@ public extension Constraint {
         }
     }
 
+    @inlinable
     func lessThanOrEqualTo(_ object: CBObject) -> Self {
         self.edit {
             $0.relation = .lessThanOrEqual
@@ -123,18 +135,21 @@ public extension Constraint {
 
 public extension Constraint {
 
+    @inlinable
     func constant(_ constant: CGFloat) -> Self {
         self.edit {
             $0.constant = constant
         }
     }
 
+    @inlinable
     func multiplier(_ multiplier: CGFloat) -> Self {
         self.edit {
             $0.multiplier = multiplier
         }
     }
 
+    @inlinable
     func priority(_ priority: CBLayoutPriority) -> Self {
         self.edit {
             $0.priority = priority
@@ -143,6 +158,7 @@ public extension Constraint {
 }
 
 public extension Constraint where Ref == ConstraintYReference {
+    @inlinable
     var top: Self {
         self.edit {
             $0.firstAttribute.insert(.bottom)
@@ -150,6 +166,7 @@ public extension Constraint where Ref == ConstraintYReference {
     }
 
     #if !os(macOS)
+    @inlinable
     var topMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.topMargin)
@@ -157,12 +174,14 @@ public extension Constraint where Ref == ConstraintYReference {
     }
     #endif
 
+    @inlinable
     var bottom: Self {
         self.edit {
             $0.firstAttribute.insert(.bottom)
         }
     }
 
+    @inlinable
     var bottomMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.bottom)
@@ -171,6 +190,7 @@ public extension Constraint where Ref == ConstraintYReference {
 }
 
 public extension Constraint where Ref == ConstraintXReference {
+    @inlinable
     var leading: Self {
         self.edit {
             $0.firstAttribute.insert(.leading)
@@ -178,6 +198,7 @@ public extension Constraint where Ref == ConstraintXReference {
     }
 
     #if !os(macOS)
+    @inlinable
     var leadingMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.leadingMargin)
@@ -185,6 +206,7 @@ public extension Constraint where Ref == ConstraintXReference {
     }
     #endif
 
+    @inlinable
     var left: Self {
         self.edit {
             $0.firstAttribute.insert(.left)
@@ -192,6 +214,7 @@ public extension Constraint where Ref == ConstraintXReference {
     }
 
     #if !os(macOS)
+    @inlinable
     var leftMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.leftMargin)
@@ -201,6 +224,7 @@ public extension Constraint where Ref == ConstraintXReference {
 }
 
 public extension Constraint where Ref == ConstraintXReference {
+    @inlinable
     var trailing: Self {
         self.edit {
             $0.firstAttribute.insert(.trailing)
@@ -208,6 +232,7 @@ public extension Constraint where Ref == ConstraintXReference {
     }
 
     #if !os(macOS)
+    @inlinable
     var trailingMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.trailingMargin)
@@ -215,6 +240,7 @@ public extension Constraint where Ref == ConstraintXReference {
     }
     #endif
 
+    @inlinable
     var right: Self {
         self.edit {
             $0.firstAttribute.insert(.right)
@@ -222,6 +248,7 @@ public extension Constraint where Ref == ConstraintXReference {
     }
 
     #if !os(macOS)
+    @inlinable
     var rightMargin: Self {
         self.edit {
             $0.firstAttribute.insert(.rightMargin)
@@ -231,6 +258,7 @@ public extension Constraint where Ref == ConstraintXReference {
 }
 
 public extension Constraint where Ref == ConstraintCenterReference {
+    @inlinable
     var centerY: Self {
         self.edit {
             $0.firstAttribute.insert(.centerY)
@@ -238,6 +266,7 @@ public extension Constraint where Ref == ConstraintCenterReference {
     }
 
     #if !os(macOS)
+    @inlinable
     var centerYWithinMargins: Self {
         self.edit {
             $0.firstAttribute.insert(.centerYWithinMargins)
@@ -245,6 +274,7 @@ public extension Constraint where Ref == ConstraintCenterReference {
     }
     #endif
 
+    @inlinable
     var centerX: Self {
         self.edit {
             $0.firstAttribute.insert(.centerX)
@@ -252,6 +282,7 @@ public extension Constraint where Ref == ConstraintCenterReference {
     }
 
     #if !os(macOS)
+    @inlinable
     var centerXWithinMargins: Self {
         self.edit {
             $0.firstAttribute.insert(.centerXWithinMargins)
@@ -261,12 +292,14 @@ public extension Constraint where Ref == ConstraintCenterReference {
 }
 
 public extension Constraint where Ref == ConstraintDimensionReference {
+    @inlinable
     var height: Self {
         self.edit {
             $0.firstAttribute.insert(.height)
         }
     }
 
+    @inlinable
     var width: Self {
         self.edit {
             $0.firstAttribute.insert(.width)
@@ -276,12 +309,14 @@ public extension Constraint where Ref == ConstraintDimensionReference {
 
 public extension Constraint where Ref == ConstraintYReference {
 
+    @inlinable
     var firstBaseline: Self {
         self.edit {
             $0.firstAttribute.insert(.firstBaseline)
         }
     }
 
+    @inlinable
     var lastBaseline: Self {
         self.edit {
             $0.firstAttribute.insert(.lastBaseline)
@@ -290,6 +325,7 @@ public extension Constraint where Ref == ConstraintYReference {
 }
 
 public extension Constraint {
+    @inlinable
     func isActive(_ isActive: Bool) -> Self {
         self.edit {
             $0.isActive = isActive

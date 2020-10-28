@@ -30,8 +30,10 @@ import UIKit
 /// UICSubview class is a wrapper that will add the subview into superview,
 /// but checking the `translatesAutoresizingMaskIntoConstraints` and set to false if is needed
 public extension CBView {
+    @frozen
     struct CBSubview<Super: CBView> {
-        fileprivate weak var superview: Super!
+        @usableFromInline
+        weak var superview: Super!
 
         /// Safety check superview and set `translatesAutoresizingMaskIntoConstraints` to false if needed
         public init(_ superview: Super) {
@@ -49,6 +51,7 @@ public extension CBView {
             self.spSafe()
         }
 
+        @inline(__always)
         private func spSafe() {
             self.superview.setAutoresizingToFalse(.superview)
         }
@@ -62,18 +65,23 @@ public extension CBView {
 
 public extension CBView.CBSubview {
     /// Performs `addSubview(_:)` on `CBView`
+    @inlinable @inline(__always)
     func addSubview(_ view: CBView) {
         self.safe(view)
         self.superview.addSubview(view)
     }
 
+    #if !os(macOS)
     /// Performs `insertSubview(_:, at:)` on `CBView`
+    @inlinable @inline(__always)
     func insertSubview(_ view: CBView, at index: Int) {
         self.safe(view)
 
-        #if !os(macOS)
         self.superview.insertSubview(view, at: index)
-        #else
+    }
+    #else
+    @inlinable
+    func insertSubview(_ view: CBView, at index: Int) {
         guard
             let relativeView = self.superview.subviews
                 .enumerated()
@@ -87,10 +95,11 @@ public extension CBView.CBSubview {
             return
         }
         self.superview.addSubview(view, positioned: .below, relativeTo: relativeView)
-        #endif
     }
+    #endif
 
     /// Performs `insertSubview(_:, aboveSubview:)` on `CBView`
+    @inlinable @inline(__always)
     func insertSubview(_ view: CBView, aboveSubview subview: CBView) {
         self.safe(view)
         #if !os(macOS)
@@ -101,6 +110,7 @@ public extension CBView.CBSubview {
     }
 
     /// Performs `insertSubview(_:, belowSubview:)` on `CBView`
+    @inlinable @inline(__always)
     func insertSubview(_ view: CBView, belowSubview subview: CBView) {
         self.safe(view)
         #if !os(macOS)
@@ -113,24 +123,28 @@ public extension CBView.CBSubview {
 
 public extension CBView.CBSubview where Super: CBStackView {
     /// Performs `addArrangedSubview(_:)` on `UIStackView`
+    @inlinable @inline(__always)
     func addArrangedSubview(_ view: CBView!) {
         self.safe(view)
         self.superview.addArrangedSubview(view)
     }
 
     /// Performs `insertArrangedSubview(_:, at:)` on `UIStackView`
+    @inlinable @inline(__always)
     func insertArrangedSubview(_ view: CBView, at index: Int) {
         self.safe(view)
         self.superview.insertArrangedSubview(view, at: index)
     }
 }
 
-private extension CBView.CBSubview {
+extension CBView.CBSubview {
+    @usableFromInline
     func safe(_ view: CBView) {
-        view.setAutoresizingToFalse(.subview)
         if view === self.superview {
             fatalError()
         }
+        
+        view.setAutoresizingToFalse(.subview)
     }
 }
 
