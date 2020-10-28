@@ -143,7 +143,7 @@ extension CBView.CBSubview {
         if view === self.superview {
             fatalError()
         }
-        
+
         view.setAutoresizingToFalse(.subview)
     }
 }
